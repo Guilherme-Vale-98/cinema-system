@@ -21,6 +21,9 @@ public class Movie {
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
 
+    @OneToMany(mappedBy = "movie")
+    private List<Session> sessions;
+
     @ManyToOne
     @JoinColumn(name = "director_id", nullable = false)
     private Director director;
@@ -81,6 +84,14 @@ public class Movie {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Session> getSessions() {
+        return sessions;
+    }
+
+    public void setSessions(List<Session> sessions) {
+        this.sessions = sessions;
     }
 
     public Director getDirector() {
