@@ -21,7 +21,7 @@
         genre varchar(30) not null,
         description text not null,
         director_id bigint not null,
-        runtime int not null,
+        runtime_min int not null,
         poster_path varchar(100) not null,
         primary key (id),
         CONSTRAINT FOREIGN KEY (director_id) REFERENCES director (id)
