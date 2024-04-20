@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api")
@@ -17,18 +20,24 @@ public class TestController {
 
     @GetMapping("/all")
     public ResponseEntity testAll(){
-        return new ResponseEntity("TESTING ALL", HttpStatus.OK);
+        Map<String, String> body = new HashMap<>();
+        body.put("message", "TESTING ALL");
+        return new ResponseEntity(body, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/user")
     public ResponseEntity testuser(){
-        return new ResponseEntity("TESTING USER", HttpStatus.OK);
+        Map<String, String> body = new HashMap<>();
+        body.put("message", "TESTING USER");
+        return new ResponseEntity(body, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin")
     public ResponseEntity testadmin(){
-        return new ResponseEntity("TESTING ADMIN", HttpStatus.OK);
+        Map<String, String> body = new HashMap<>();
+        body.put("message", "TESTING ADMIN");
+        return new ResponseEntity(body, HttpStatus.OK);
     }
 }
