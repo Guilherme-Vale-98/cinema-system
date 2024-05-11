@@ -1,8 +1,11 @@
 package com.gui.cinemabackend.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,7 +20,8 @@ public class Director {
     private String name;
 
     @OneToMany(mappedBy = "director")
-    private List<Movie> movies;
+    @JsonIgnore
+    private List<Movie> movies = new ArrayList<>();
 
     public Director() {
     }
@@ -49,6 +53,12 @@ public class Director {
     }
 
     public void setMovies(List<Movie> movies) {
+        this.movies = movies;
+    }
+
+    public Director(Long id, String name, List<Movie> movies) {
+        this.id = id;
+        this.name = name;
         this.movies = movies;
     }
 }

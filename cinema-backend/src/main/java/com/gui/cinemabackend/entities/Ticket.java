@@ -1,5 +1,7 @@
 package com.gui.cinemabackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gui.cinemabackend.model.Seat;
 import jakarta.persistence.*;
 
@@ -12,10 +14,11 @@ public class Ticket {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "session_id", nullable = false)
+    @JoinColumn(name = "session_id")
+    @JsonIgnore
     private Session session;
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = true)
     private User user;
     @Embedded
     @AttributeOverrides({
@@ -42,7 +45,13 @@ public class Ticket {
         this.session = session;
     }
 
+    public User getUser() {
+        return user;
+    }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public Seat getSeat() {
         return seat;
@@ -55,10 +64,11 @@ public class Ticket {
     public Ticket() {
     }
 
-    public Ticket(Long id, Session session, Seat seat) {
+    public Ticket(Long id, Session session, Seat seat, User user) {
         this.id = id;
         this.session = session;
         this.seat = seat;
+        this.user = user;
     }
 
     @Override
