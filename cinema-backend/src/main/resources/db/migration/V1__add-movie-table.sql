@@ -4,19 +4,19 @@
 
 
     create table director (
-        id bigint not null,
+        id bigint not null AUTO_INCREMENT,
         name varchar(30) not null,
         primary key (id)
     );
 
    create table actor (
-        id bigint not null,
+        id bigint not null AUTO_INCREMENT,
         name varchar(30) not null,
         primary key (id)
     );
 
     create table movie (
-        id bigint not null,
+        id bigint not null AUTO_INCREMENT,
         title varchar(100) not null,
         genre varchar(30) not null,
         description text not null,

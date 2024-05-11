@@ -1,5 +1,7 @@
 package com.gui.cinemabackend.entities;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
 
 import java.util.List;
 import java.util.Objects;
@@ -24,11 +26,11 @@ public class Movie {
     @OneToMany(mappedBy = "movie")
     private List<Session> sessions;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "director_id", nullable = false)
     private Director director;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "movie_actor",
             joinColumns = @JoinColumn(name = "movie_id"),
@@ -99,6 +101,7 @@ public class Movie {
     }
 
     public void setDirector(Director director) {
+        director.getMovies().add(this);
         this.director = director;
     }
 
@@ -135,6 +138,7 @@ public class Movie {
         actors.remove(actor);
         actor.getMovies().remove(this);
     }
+
 
     @Override
     public boolean equals(Object o) {
