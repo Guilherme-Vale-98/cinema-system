@@ -38,6 +38,7 @@ const LoginForm = () => {
   return (
     <form onSubmit={handleSubmit}>
       <input
+        className='h-10 w-10'
         type="text"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
@@ -53,7 +54,7 @@ const LoginForm = () => {
         {isLoading ? 'Logging in...' : 'Login'}
       </button>
       <br/>
-      <h1>
+      <h1 className='text-yellow-600'>
         Testing: {data1?.message}
         Testing: {data2?.message}
         Testing: {data3?.message}
