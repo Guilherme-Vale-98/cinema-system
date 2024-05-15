@@ -1,0 +1,39 @@
+@media (max-width: 768px) {
+    .mobile-section {
+        display: flex;
+        background-color: #f0f0f0;
+    }
+
+}
+.sec{
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(12px);
+   }
+ .card {
+     width: 320px; 
+     margin-right: 20px;
+     padding: 15px;
+     height: 670px;
+     border-radius: 8px;
+   }
+ 
+ .navigation-buttons{
+     position: absolute;
+     display: flex;
+     justify-content: space-between;
+     width: 100%;
+     left: 0;
+     top: 35%;
+     font-weight: bold;
+   }
+ 
+
+@media (max-width: 768px) {
+    .card {
+        width: 320px; 
+        padding: 15px;
+        height: 670px;
+        border-radius: 8px;
+        margin-left: 15px;
+    }
+}
