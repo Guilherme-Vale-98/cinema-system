@@ -1,7 +1,5 @@
 import { motion, useAnimate } from 'framer-motion';
-import React from 'react'
 import { useState } from 'react';
-import MoviePoster from '../movies/MovieCard';
 import MovieCard from '../movies/MovieCard';
 import movieList from '../movies/MovieList';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
@@ -50,8 +48,8 @@ const Carrousel = (props: Props) => {
             <div className="relative md:w-full my-[2rem] p-6 overflow-x-hidden">
                 <motion.div className="flex md:gap-[3rem] md:relative left-[-170px]" >
                     {movieListSlice.map((movie, index) =>
-                        <div 
-                        ><MovieCard movie={movie} key={index}>
+                        <div key={index}
+                        ><MovieCard movie={movie} >
                             </MovieCard></div>
                     )}
                 </motion.div>
