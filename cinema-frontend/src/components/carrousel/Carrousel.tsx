@@ -46,13 +46,15 @@ const Carrousel = (props: Props) => {
             </div>
             </div>
             <div className="relative md:w-full my-[2rem] p-6 overflow-x-hidden">
-                <motion.div className="flex md:gap-[3rem] md:relative left-[-170px]" >
+                <motion.div className="flex md:gap-[3rem] md:relative left-[-170px] " >
                     {movieListSlice.map((movie, index) =>
-                        <div key={index}
-                        ><MovieCard movie={movie} >
-                            </MovieCard></div>
+                        <div className='border-4 flex flex-col items-center' key={index}>
+                            <MovieCard movie={movie} />
+                            <button type="button" className="bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 w-[60%] focus:ring-blue-300 font-medium rounded-full text-lg px-5 py-2.5 text-center me-2 m-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Comprar ingresso</button>
+                        </div>
                     )}
                 </motion.div>
+                
                 <div className="navigation-buttons">
                     <button className='w-12 h-12' onClick={handlePrevSlide}><FaArrowLeft className='w-12 h-12 bg-black opacity-65' /></button>
                     <button className='w-12 h-12' onClick={handleNextSlide}><FaArrowRight className='w-12 h-12 bg-black opacity-65' /></button>

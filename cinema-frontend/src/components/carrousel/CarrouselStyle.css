@@ -9,13 +9,7 @@
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(12px);
    }
- .card {
-     width: 320px; 
-     margin-right: 20px;
-     padding: 15px;
-     height: 670px;
-     border-radius: 8px;
-   }
+
  
  .navigation-buttons{
      position: absolute;

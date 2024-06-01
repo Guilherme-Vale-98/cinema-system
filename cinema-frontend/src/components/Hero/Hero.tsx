@@ -5,7 +5,7 @@ type Props = {}
 const Hero = (props: Props) => {
     return (
         <section
-            className="relative bg-[url(../public/theaterroom.jpg)] bg-cover bg-center bg-no-repeat text-white"
+            className="relative bg-[url(/theaterroom.jpg)] bg-cover bg-center bg-no-repeat text-white"
         >
             <div
                 className="absolute inset-0 bg-white/75 sm:bg-transparent sm:from-white/95 sm:to-white/25 ltr:sm:bg-gradient-to-r rtl:sm:bg-gradient-to-l"
