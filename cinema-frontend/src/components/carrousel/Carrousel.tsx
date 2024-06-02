@@ -39,16 +39,16 @@ const Carrousel = (props: Props) => {
         }}>
             <div className='absolute w-full h-full sec'></div>
             <div className='flex h-32 w-4/5 mx-auto pb-6 z-10 px-8 justify-between items-end border-b-2'>
-                <h2 className='text-6xl font-bold'>Filmes no Cinesys</h2>
+                <h2 className='text-6xl font-bold'>Filmes em destaque</h2>
                 <div className='flex font-semibold gap-10'>
                     <span className='text-2xl border border-transparent hover:border-b-white'> Em cartaz </span>
-                    <span className='text-2xl hover:border-b duration-[2000] ease-in-out'> Em breve </span>
+                    <span className='text-2xl hover:border-b'> Em breve </span>
             </div>
             </div>
             <div className="relative md:w-full my-[2rem] p-6 overflow-x-hidden">
                 <motion.div className="flex md:gap-[3rem] md:relative left-[-170px] " >
                     {movieListSlice.map((movie, index) =>
-                        <div className='border-4 flex flex-col items-center' key={index}>
+                        <div className='flex flex-col items-center' key={index}>
                             <MovieCard movie={movie} />
                             <button type="button" className="bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 w-[60%] focus:ring-blue-300 font-medium rounded-full text-lg px-5 py-2.5 text-center me-2 m-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Comprar ingresso</button>
                         </div>

@@ -1,13 +1,13 @@
 import React from 'react'
-import Hero from '../components/Hero/Hero'
+import ListSection from '../components/ListSection/ListSection'
+
 
 type Props = {}
 
 const Sessions = (props: Props) => {
   return (
     <div>
-      <Hero/>
-
+      <ListSection/>
     </div>
   )
 }
