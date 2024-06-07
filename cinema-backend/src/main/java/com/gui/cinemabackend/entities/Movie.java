@@ -1,4 +1,5 @@
 package com.gui.cinemabackend.entities;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cascade;
@@ -24,6 +25,7 @@ public class Movie {
     private String description;
 
     @OneToMany(mappedBy = "movie")
+    @JsonIgnore
     private List<Session> sessions;
 
     @ManyToOne(cascade = CascadeType.PERSIST)

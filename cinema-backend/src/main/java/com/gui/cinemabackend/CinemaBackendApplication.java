@@ -19,18 +19,5 @@ public class CinemaBackendApplication {
 		SpringApplication.run(CinemaBackendApplication.class, args);
 	}
 
-	@Bean
-	public CommandLineRunner bootstrapData(ActorRepository actorRepository,
-										   DirectorRepository directorRepository,
-										   MovieRepository movieRepository,
-										   SessionRepository sessionRepository,
-										   TicketRepository ticketRepository) {
-
-		return args -> {
-
-			Director director = new Director(67L, "Director Test", new ArrayList<>());
-			directorRepository.save(director);
-		};
-	}
 }
 

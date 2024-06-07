@@ -2,9 +2,11 @@ package com.gui.cinemabackend.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
@@ -17,8 +19,8 @@ public class Session {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "movie_id", nullable = false)
-    @JsonIgnore
     private Movie movie;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     private Date startTime;
     @OneToMany(mappedBy = "session", fetch = FetchType.EAGER)
     private List<Ticket> tickets;

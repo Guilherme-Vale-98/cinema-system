@@ -1,9 +1,11 @@
 package com.gui.cinemabackend.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gui.cinemabackend.entities.Movie;
 import com.gui.cinemabackend.entities.Session;
 import com.gui.cinemabackend.entities.Ticket;
 import jakarta.persistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
@@ -13,6 +15,7 @@ public class SessionDTO {
     private Long id;
     private String movieTitle;
     private List<Ticket> tickets;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     private Date startTime;
 
     public SessionDTO (Session session){
