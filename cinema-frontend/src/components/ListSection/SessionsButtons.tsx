@@ -18,10 +18,9 @@ const SessionsButtons = (props: Props) => {
         <div className='relative overflow-hidden'>
             <button className='w-[100px] h-[40px] bg-transparent border-blue-600 border rounded-lg font-bold text-xl'
                 onMouseEnter={handleMouseEnter}
-
             >12:00</button>
             <div onMouseLeave={handleMouseLeave} ref={scope}
-                className='absolute w-[100px]  font-bold border-blue-600 border flex justify-center items-center h-[40px] rounded-lg top-[-40px] bg-blue-600'>
+                className='absolute w-[100px] cursor-pointer  font-bold border-blue-600 border flex justify-center items-center h-[40px] rounded-lg top-[-40px] bg-blue-600'>
                     COMPRAR!</div>
         </div>
     )

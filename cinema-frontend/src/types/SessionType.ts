@@ -8,3 +8,8 @@ export type Session = {
     startTime: Date;
     tickets?: Ticket[];
 }
+
+export interface ApiError {
+    message: string;
+    status: number;
+  }
