@@ -45,7 +45,6 @@ const ListSection = (props: Props) => {
           <span className='text-3xl border border-transparent hover:border-b-white'>
             Sessões
           </span>
-          <span className='text-3xl hover:border-b '>Detalhes</span>
         </div>
       </div>
       <div className='md:w-4/5 md:mx-auto w-full rounded-lg overflow-scroll md:overflow-auto bg-gray-800 my-10 mds:rounded-xl'>
@@ -66,8 +65,6 @@ const ListSection = (props: Props) => {
         {error && 'data' in error && <p>{(error.data as ApiError).message}</p>}
         {movies && movies.map((movie: Movie, index: number) => <ListSectionItem movie={movie} key={index}/>)}
       </ul>
-      
-
     </section>
   )
 }

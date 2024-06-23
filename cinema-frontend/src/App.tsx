@@ -10,6 +10,7 @@ import Offers from './pages/Offers'
 import Navbar from './components/navbar/Navbar'
 import AboutUs from './pages/AboutUs'
 import Footer from './components/footer/Footer'
+import SessionDetails from './components/sessionDetails/SessionDetails'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -22,6 +23,7 @@ function App() {
         <Route path='/sessoes' element={<Sessions/>}></Route>
         <Route path='/promocoes' element={<Offers/>}></Route>
         <Route path='/sobre' element={<AboutUs/>}></Route>
+        <Route path="/sessoes/:movieTitle/:sessionId" element={<SessionDetails/>} />
       </Routes>
       <Footer></Footer>
     </>

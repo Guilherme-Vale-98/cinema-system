@@ -24,7 +24,8 @@ const ListSectionItem = ({movie}: Props) => {
         <div className='mt-5 flex gap-3 flex-wrap'>
           <span className='text-lg w-full'>Horários:</span>
           {movie.sessions?.map((session, index) => 
-            <SessionsButton key={index} startTime={session.startTime}/>
+            <SessionsButton key={index} movieTitle={movie.title} startTime={session.startTime} 
+            sessionId={session.id}/>
           )}
         </div>
       </div>
