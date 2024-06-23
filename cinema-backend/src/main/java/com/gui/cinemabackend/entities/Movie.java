@@ -24,8 +24,7 @@ public class Movie {
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
 
-    @OneToMany(mappedBy = "movie")
-    @JsonIgnore
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Session> sessions;
 
     @ManyToOne(cascade = CascadeType.PERSIST)

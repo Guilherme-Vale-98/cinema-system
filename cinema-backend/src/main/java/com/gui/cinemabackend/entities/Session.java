@@ -19,10 +19,11 @@ public class Session {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "movie_id", nullable = false)
+    @JsonIgnore
     private Movie movie;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     private Date startTime;
-    @OneToMany(mappedBy = "session", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "session", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Ticket> tickets;
 
 

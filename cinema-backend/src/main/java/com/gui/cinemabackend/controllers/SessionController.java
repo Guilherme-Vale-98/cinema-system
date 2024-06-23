@@ -77,32 +77,4 @@ public class SessionController {
         return new ResponseEntity(sessionDTO.getStartTime(), HttpStatus.OK);
     }
 
-    @GetMapping("/date/{day}")
-    public ResponseEntity<List<Session>> getSessionsByDate(
-            @PathVariable("day") @DateTimeFormat(pattern = "dd-MM-yyyy") Date day){
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(day);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        Date startOfDay = calendar.getTime();
-
-        calendar.set(Calendar.HOUR_OF_DAY, 23);
-        calendar.set(Calendar.MINUTE, 59);
-        calendar.set(Calendar.SECOND, 59);
-        calendar.set(Calendar.MILLISECOND, 999);
-        Date endOfDay = calendar.getTime();
-
-
-        List<Session> sessions = sessionRepository.findSessionsByDate(startOfDay, endOfDay);
-        if (sessions.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhuma sessao neste dia.");
-        }
-        return new ResponseEntity<>(sessions, HttpStatus.OK);
-    }
-
-
-
 }
