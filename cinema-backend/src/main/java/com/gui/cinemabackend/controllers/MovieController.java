@@ -112,6 +112,24 @@ public class MovieController {
 
         return new ResponseEntity<>(filteredMovies, HttpStatus.OK);
     }
+    @GetMapping("/{movieTitle}/{sessionId}")
+    public ResponseEntity<Movie> getMovieByNameAndSessionDate(
+            @PathVariable("sessionId") Long sessionId,
+            @PathVariable("movieTitle") String movieTitle){
+            Optional<Movie> movie = movieRepository.findByTitle(movieTitle);
+            if (movie.isEmpty()){
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum filme com este nome.");
+            }
+
+            movie.get().setSessions(movie.get().getSessions().stream()
+                    .filter(session -> session.getId().equals(sessionId)).toList());
+
+            if (movie.get().getSessions().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sessão não encontrada.");
+            }
+            return new ResponseEntity<>(movie.get(), HttpStatus.OK);
+
+    }
 
 
 }
