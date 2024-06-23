@@ -4,10 +4,10 @@ export const cinemaApi = createApi({
   reducerPath: 'cinemaApi',
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8080/api' }),
   endpoints: (builder) => ({
-    getSessionsByDate: builder.query({
-      query: (date) => `/sessions/date/${date}`,
+    getMoviesByDate: builder.query({
+      query: (date) => `/movies/session/${date}`,
     }),
   }),
 });
 
-export const { useGetSessionsByDateQuery } = cinemaApi;
+export const { useGetMoviesByDateQuery } = cinemaApi;

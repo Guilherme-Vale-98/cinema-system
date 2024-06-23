@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import ListSectionItem from './ListSectionItem';
-import { useGetSessionsByDateQuery } from '../../redux/services/api/cinemaApi';
+import { useGetMoviesByDateQuery } from '../../redux/services/api/cinemaApi';
 import { ApiError, Session } from '../../types/SessionType';
+import { Movie } from '../../types/MovieType';
 
 type Props = {}
 
@@ -12,10 +13,10 @@ const ListSection = (props: Props) => {
 
   const formatDate = (date: Date|undefined) => {
     if(!date) return
-    const formatedDate = date.toISOString().slice(8,10)+date.toISOString().slice(4,7)+'-'+date.toISOString().slice(0,4);
+    const formatedDate = date.toLocaleDateString('pt-br').replace(/\//g, "-");
     return formatedDate;
   }
-  const {data: sessions, error, isLoading} = useGetSessionsByDateQuery(formatDate(selectedDate),{
+  const {data: movies, error, isLoading} = useGetMoviesByDateQuery(formatDate(selectedDate),{
     skip: !selectedDate,
   })
 
@@ -35,6 +36,7 @@ const ListSection = (props: Props) => {
     setWeekdays(dates);
     setSelectedDate(dates[0]);
   }
+  console.log(movies)
   return (
     <section className='flex text-white bg-[#3f546e]  flex-wrap relative w-full'
     >
@@ -59,10 +61,10 @@ const ListSection = (props: Props) => {
           ))}
         </ul>
       </div>
-      <ul className='w-4/5 mx-auto'>
+      <ul className='w-4/5 mx-auto min-h-[400px]'>
         {isLoading && <p>Loading...</p>}
         {error && 'data' in error && <p>{(error.data as ApiError).message}</p>}
-        {sessions && sessions.map((session: Session) => <ListSectionItem/>)}
+        {movies && movies.map((movie: Movie, index: number) => <ListSectionItem movie={movie} key={index}/>)}
       </ul>
       
 
