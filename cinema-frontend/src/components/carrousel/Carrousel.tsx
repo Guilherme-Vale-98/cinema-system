@@ -36,7 +36,7 @@ const Carrousel = (props: Props) => {
             backgroundPosition: 'center',
             backgroundSize: 'cover',
         
-        }}>
+        }}>        
             <div className='absolute w-full h-full sec'></div>
             <div className='flex h-32 w-4/5 mx-auto pb-6 z-10 px-8 justify-between items-end border-b-2'>
                 <h2 className='text-6xl font-bold'>Filmes em destaque</h2>
