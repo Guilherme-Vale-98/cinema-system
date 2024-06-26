@@ -11,12 +11,15 @@ const ListSection = (props: Props) => {
   const dayNames = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
   const [selectedDate, setSelectedDate] = useState<Date>();
 
-  const formatDate = (date: Date|undefined) => {
-    if(!date) return
-    const formatedDate = date.toLocaleDateString('pt-br').replace(/\//g, "-");
+  const formatDate = (date: Date | undefined) => {
+    const formatedDate = date?.toLocaleDateString('pt-br').replace(/\//g, "-");
     return formatedDate;
   }
-  const {data: movies, error, isLoading} = useGetMoviesByDateQuery(formatDate(selectedDate),{
+
+  const formatedDate = formatDate(selectedDate);
+
+
+  const {data: movies, error, isLoading} = useGetMoviesByDateQuery(formatedDate ?? '',{
     skip: !selectedDate,
   })
 
