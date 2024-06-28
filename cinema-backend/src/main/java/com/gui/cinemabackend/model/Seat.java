@@ -8,18 +8,18 @@ import java.util.Objects;
 
 @Embeddable
 public class Seat {
-    private Integer column;
+    private String column;
     private String row;
 
     @Enumerated(EnumType.STRING)
     private SeatEnum seatType;
     private Integer price;
 
-    public Integer getColumn() {
+    public String getColumn() {
         return column;
     }
 
-    public void setColumn(Integer column) {
+    public void setColumn(String column) {
         this.column = column;
     }
 
@@ -50,7 +50,7 @@ public class Seat {
     public Seat() {
     }
 
-    public Seat(Integer column, String row, SeatEnum seatType, Integer price) {
+    public Seat(String column, String row, SeatEnum seatType, Integer price) {
         this.column = column;
         this.row = row;
         this.seatType = seatType;

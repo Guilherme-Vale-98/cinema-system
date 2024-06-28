@@ -1,15 +1,19 @@
 import React from 'react'
 import { Movie } from '../../types/MovieType'
+import { Seat } from '../../types/SeatType'
 
 type Props = {
-    movie: Movie
+    movie: Movie,
+    seats: Seat[]
 }
 
-const TicketSummary = ({ movie }: Props) => {
+const TicketSummary = ({ movie, seats }: Props) => {
+
+
     return (
-        <div className='border flex p-4 text-white 
-    flex-col bg-red-900 w-[450px] h-[600px]'>
-        <div className='flex mb-4 h-10  
+        <div className='flex p-4 rounded-md text-white 
+    flex-col bg-[#111827] w-[450px] h-[600px]'>
+            <div className='flex mb-4 h-10  
     font-semibold items-center text-lg'>
                 Resumo do pedido
             </div>
@@ -23,17 +27,16 @@ const TicketSummary = ({ movie }: Props) => {
             <div className='mt-2 text-lg justify-between flex font-bold'>
                 Assentos
                 <div className='flex ml-6 gap-1 flex-wrap'>
-                    <p>B2</p>
-                    <p>B2</p>
-                    <p>B2</p>
+                    {seats.map((seat,index)=> <p key={index}>{seat.row+seat.column}</p>)}
                 </div>
             </div>
-            <div className='border-t mt-32 gap-1 text-lg flex flex-col'>
+            <div className='border-t mt-auto gap-1 text-lg flex flex-col'>
                 <span className='flex justify-between'>
-                    Itens <p>8</p>
+                    Itens <p>{seats.length}</p>
                 </span>
                 <span>Taxas</span>
-                <span className='font-bold'>Total</span>
+                <span className='font-bold  flex justify-between'>Total: 
+                    <p>R$ {seats.reduce((total, seat)=> total + seat.price, 0)}</p></span>
             </div>
         </div>
     )
