@@ -4,7 +4,7 @@ import Carrousel from '../components/carrousel/Carrousel'
 
 const Home = () => {
   return (
-    <div className='w-full'>
+    <div className='w-full mt-16'>
           <Carrousel/>
           <Hero></Hero>
     </div>

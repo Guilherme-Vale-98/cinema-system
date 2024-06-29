@@ -6,7 +6,7 @@ type Props = {}
 
 const Sessions = (props: Props) => {
   return (
-    <div>
+    <div className='mt-16'>
       <ListSection/>
     </div>
   )

@@ -43,7 +43,7 @@ const SeatRow = ({ rowLetter, selectedSeats, setSelectedSeats }: Props) => {
                 }} */
                 transition={{type: "spring", stiffness: 600}}
                 className={`w-8 h-8 mx-[1px] 
-                ${isSeatSelected ? "bg-yellow-400 z-10" : "bg-blue-600"}
+                ${isSeatSelected ? "bg-yellow-400 z-10 border-gray-300 border-2" : "bg-blue-600"}
                 rounded-full relative text-center text-base text-black`}>
 
                     {isSeatSelected ?  seat.row+seat.column  : ""}

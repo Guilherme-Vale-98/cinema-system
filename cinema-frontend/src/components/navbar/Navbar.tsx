@@ -5,7 +5,7 @@ type Props = {}
 
 const Navbar = (props: Props) => {
     return (
-        <nav className="bg-white  dark:bg-gray-900 fixed w-full top-0 z-30 ">
+        <nav className="bg-white dark:bg-gray-900 fixed w-full z-30 ">
             <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto text-xl p-4">
                 <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
                     <img src="https://flowbite.com/docs/images/logo.svg" className="h-8" alt="Flowbite Logo" />
@@ -58,7 +58,7 @@ const Navbar = (props: Props) => {
                 </div>
             </div>
         </nav>
-    )
+   )
 }
 
 export default Navbar
