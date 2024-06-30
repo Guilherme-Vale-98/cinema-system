@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom'
 import { RootState } from '../../redux/store';
@@ -8,8 +8,7 @@ import { FaMinus, FaPlus, FaUserNinja } from 'react-icons/fa';
 import SeatsGrid from './SeatsGrid';
 import { Seat } from '../../types/SeatType';
 import { Movie } from '../../types/MovieType';
-import { BiDownArrow, BiMinus } from 'react-icons/bi';
-import { FaArrowDownAZ } from 'react-icons/fa6';
+import { ClipLoader } from 'react-spinners';
 
 
 type Props = {}
@@ -21,13 +20,27 @@ const SessionDetails = (props: Props) => {
   
    const { movieTitle, sessionId } = useParams<{ movieTitle: string, sessionId: string }>();
   const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]);
-  
+  const [takenSeats, setTakenSeats] = useState<Seat[]>([]);
   const { data: movie, error, isLoading } = useGetMovieSessionByDateQuery({ movieTitle, sessionId });
+  
+  useEffect(()=>{
+    if(movie){
+      const loadedTakenSeats = movie.sessions[0].tickets?.map(ticket => {
+      const seat: Seat = {row: ticket.seat.row, column: ticket.seat.column, price: 30, type: ticket.seat.type }
+      return seat
+    })
+    if(loadedTakenSeats){
+      setTakenSeats(loadedTakenSeats)
+    }
+  }
+  }, [movie])
 
-  if (isLoading) return <p>Loading...</p>;
+
+  if (isLoading) return <div className='min-h-[600px] flex items-center justify-center mt-16 p-4 bg-[#3f546e] '><ClipLoader/></div> ;
   if (error) return <p>Error: {(error as any).message}</p>;
   if (!movie) return <p>Movie not found</p>;
-  
+
+
 
   const handleSelectChange = (index: number, event: React.ChangeEvent<HTMLSelectElement>) => {
     const newSelectedSeats = [...selectedSeats];
@@ -39,10 +52,13 @@ const SessionDetails = (props: Props) => {
     newSelectedSeats[index] = selectedSeat;
     setSelectedSeats(newSelectedSeats);
   };
+  
   const renderSeatsGrid = () =>{
     return (
       <div className=' rounded-lg w-full flex-col ml-4 justify-between flex h-[600px] p-4 bg-[#111827]'>
-            <SeatsGrid selectedSeats={selectedSeats} setSelectedSeats={setSelectedSeats}/> 
+            <SeatsGrid selectedSeats={selectedSeats} setSelectedSeats={setSelectedSeats}
+            takenSeats={takenSeats}
+            /> 
             <div className='border-b-4 rounded-t-xl text-center text-white text-xl font-bold bg-[#666a6f] '>
               TELA
             </div>
@@ -68,7 +84,7 @@ const SessionDetails = (props: Props) => {
         </div>
         <span className='flex font-semibold text-gray-200 items-center justify-center 
         h-8 w-32'>
-         Preço: R$ {selectedSeat.price}
+         Preço: R$ {selectedSeat.price},00
         </span>
       </li>
     );
@@ -112,7 +128,7 @@ const renderTicketSummary = (movie: Movie, seats: Seat[]) => {
                   Itens <p>{seats.length}</p>
               </span>
               <span className='font-bold  flex justify-between'>Total: 
-                  <p> R$ {seats.reduce((total, seat)=> total + seat.price, 0)}</p></span>
+                  <p> R$ {seats.reduce((total, seat)=> total + seat.price, 0)},00</p></span>
           </div>
           <div className='mt-10 gap-1 text-lg flex'>
               
@@ -136,7 +152,7 @@ const renderTicketSummary = (movie: Movie, seats: Seat[]) => {
   return (
     <section className='min-h-[600px] mt-16 p-4 bg-[#3f546e]' >
 {/*        <div className='flex h-32 w-4/5 mx-auto pb-6 z-10 px-8 justify-between items-end border-b-2'> </div>  */}
-      <div className='flex mt-4 border-t-2 pt-4 w-4/5 mx-auto '>
+      <div className='flex pt-4 border-t-2 w-4/5 mx-auto'>
 
         {renderTicketSummary(movie, selectedSeats)}
         {buySteps === 0 ? renderSeatsGrid(): ''}

@@ -1,10 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import React, { CSSProperties, useEffect, useState } from 'react'
 import ListSectionItem from './ListSectionItem';
 import { useGetMoviesByDateQuery } from '../../redux/services/api/cinemaApi';
 import { ApiError, Session } from '../../types/SessionType';
 import { Movie } from '../../types/MovieType';
+import { ClipLoader } from 'react-spinners';
 
 type Props = {}
+
+
+const override: CSSProperties = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "black",
+};
 
 const ListSection = (props: Props) => {
   const [weekdays, setWeekdays] = useState<Date[]>();
@@ -64,7 +72,9 @@ const ListSection = (props: Props) => {
         </ul>
       </div>
       <ul className='w-4/5 mx-auto min-h-[400px]'>
-        {isLoading && <p>Loading...</p>}
+        {isLoading && <div className=' w-8 m-auto'>
+          <ClipLoader />
+        </div>}
         {error && 'data' in error && <p>{(error.data as ApiError).message}</p>}
         {movies && movies.map((movie: Movie, index: number) => <ListSectionItem movie={movie} key={index}/>)}
       </ul>

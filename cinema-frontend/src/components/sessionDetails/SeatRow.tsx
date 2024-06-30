@@ -7,9 +7,10 @@ type Props = {
     rowLetter: string
     selectedSeats: Seat[],
     setSelectedSeats: React.Dispatch<React.SetStateAction<Seat[]>>
+    takenSeats: Seat[]
 }
 
-const SeatRow = ({ rowLetter, selectedSeats, setSelectedSeats }: Props) => {
+const SeatRow = ({ rowLetter, selectedSeats, setSelectedSeats, takenSeats }: Props) => {
 
 
 
@@ -30,6 +31,22 @@ const SeatRow = ({ rowLetter, selectedSeats, setSelectedSeats }: Props) => {
         const seat: Seat = { row: rowLetter, column: String(index + 1), price: 20, type: "regular" }
 
         const isSeatSelected = selectedSeats.some(e => e.column === seat.column && e.row === seat.row)
+
+        const isSeatTaken = takenSeats.some(e => e.column === seat.column && e.row === seat.row)
+        
+        if(isSeatTaken){
+            return (
+                <motion.button
+                    key={index}
+                    disabled
+                    className={`w-8 h-8 mx-[1px] 
+                     bg-gray-600
+                    rounded-full relative text-base text-black flex items-center justify-center`}>
+                        <FaUser></FaUser>
+                </motion.button>)
+        }
+
+
         return (
             <motion.button onClick={() => handleSeatClick(seat)}
                 key={index} 
@@ -44,7 +61,7 @@ const SeatRow = ({ rowLetter, selectedSeats, setSelectedSeats }: Props) => {
                 transition={{type: "spring", stiffness: 600}}
                 className={`w-8 h-8 mx-[1px] 
                 ${isSeatSelected ? "bg-yellow-400 z-10 border-gray-300 border-2" : "bg-blue-600"}
-                rounded-full relative text-center text-base text-black`}>
+                rounded-full relative text-base text-black`}>
 
                     {isSeatSelected ?  seat.row+seat.column  : ""}
             </motion.button>)
@@ -56,11 +73,10 @@ const SeatRow = ({ rowLetter, selectedSeats, setSelectedSeats }: Props) => {
    
     return (
         <div className=' text-xl w-full text-white justify-between flex'>
-            <div className='flex text-justify mt-[2px]'>{rowLetter}</div>
-            <div className='flex gap-1'>{seats.slice(0,12)}</div>
-            <div className='flex'>{seats.slice(12,16)}</div>
-            <div className='flex text-justify mt-[2px]'>{rowLetter}</div>
-
+            <div className='flex  w-[15px] text-justify mt-[2px]'>{rowLetter}</div>
+            <div className='flex  gap-1'>{seats.slice(0,12)}</div>
+            <div className='flex  '>{seats.slice(12,16)}</div>
+            <div className='flex  w-[15px] text-justify mt-[2px]'>{rowLetter}</div>
         </div>
     )
 }
