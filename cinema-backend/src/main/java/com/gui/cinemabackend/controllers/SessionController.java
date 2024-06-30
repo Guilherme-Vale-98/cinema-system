@@ -3,6 +3,7 @@ package com.gui.cinemabackend.controllers;
 import com.gui.cinemabackend.entities.Movie;
 import com.gui.cinemabackend.entities.Session;
 import com.gui.cinemabackend.entities.Ticket;
+import com.gui.cinemabackend.model.Seat;
 import com.gui.cinemabackend.model.SessionDTO;
 import com.gui.cinemabackend.repositories.MovieRepository;
 import com.gui.cinemabackend.repositories.SessionRepository;
@@ -48,7 +49,32 @@ public class SessionController {
             String message = "Session id not found";
             return new ResponseEntity(message, HttpStatus.NOT_FOUND);
         }
+
+        boolean ticketAlreadyInRepository = tickets.stream().anyMatch(
+                ticket -> ticketRepository
+                        .findBySessionAndSeat(sessionOptional.get(),
+                                ticket.getSeat().getRow(), ticket.getSeat().getColumn()).isPresent()
+                );
+
+        boolean notValidTicketSeats = tickets.stream().anyMatch(
+                ticket -> !isSeatValid(ticket.getSeat().getRow(), ticket.getSeat().getColumn()));
+
+        if(notValidTicketSeats){
+            String message = "Invalid seats";
+            return new ResponseEntity(message, HttpStatus.CONFLICT);
+        }
+
+
+        if(ticketAlreadyInRepository){
+            String message = "Seats already taken";
+            return new ResponseEntity(message, HttpStatus.CONFLICT);
+        };
+
+
+
         tickets.forEach(ticket -> ticket.setSession(sessionOptional.get()));
+        tickets.forEach(ticket -> ticket.getSeat().setPrice());
+
         ticketRepository.saveAll(tickets);
         sessionOptional.get().getTickets().addAll(tickets);
 
@@ -77,4 +103,11 @@ public class SessionController {
         return new ResponseEntity(sessionDTO.getStartTime(), HttpStatus.OK);
     }
 
+
+    private boolean isSeatValid(String row, String column){
+        if(Integer.parseInt(column) > 16 && Integer.parseInt(column) < 1){
+            return false;
+        }
+        return row.matches("[A-J]");
+    }
 }

@@ -1,9 +1,11 @@
 package com.gui.cinemabackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Embeddable
@@ -13,7 +15,9 @@ public class Seat {
 
     @Enumerated(EnumType.STRING)
     private SeatEnum seatType;
-    private Integer price;
+
+    @JsonIgnore
+    private BigDecimal price;
 
     public String getColumn() {
         return column;
@@ -28,7 +32,7 @@ public class Seat {
     }
 
     public void setRow(String row) {
-        this.row = row;
+        this.row = row.toUpperCase();
     }
 
     public SeatEnum getSeatType() {
@@ -39,18 +43,23 @@ public class Seat {
         this.seatType = seatType;
     }
 
-    public Integer getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Integer price) {
-        this.price = price;
+    public void setPrice() {
+        if(this.seatType == SeatEnum.MEIA){
+            this.price = new BigDecimal(15);
+        }
+        if(this.seatType == SeatEnum.INTEIRA){
+            this.price = new BigDecimal(30);
+        }
     }
 
     public Seat() {
     }
 
-    public Seat(String column, String row, SeatEnum seatType, Integer price) {
+    public Seat(String column, String row, SeatEnum seatType, BigDecimal price) {
         this.column = column;
         this.row = row;
         this.seatType = seatType;
@@ -62,7 +71,7 @@ public class Seat {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Seat seat = (Seat) o;
-        return Objects.equals(column, seat.column) && Objects.equals(row, seat.row) && seatType == seat.seatType && Objects.equals(price, seat.price);
+        return Objects.equals(column, seat.column) && Objects.equals(row, seat.row);
     }
 
     @Override
