@@ -61,13 +61,13 @@ public class SessionController {
 
         if(notValidTicketSeats){
             String message = "Invalid seats";
-            return new ResponseEntity(message, HttpStatus.CONFLICT);
+            return new ResponseEntity(message, HttpStatus.BAD_REQUEST);
         }
 
 
         if(ticketAlreadyInRepository){
             String message = "Seats already taken";
-            return new ResponseEntity(message, HttpStatus.CONFLICT);
+            return new ResponseEntity(message, HttpStatus.BAD_REQUEST);
         };
 
 
