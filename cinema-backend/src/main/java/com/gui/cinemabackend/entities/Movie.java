@@ -45,10 +45,14 @@ public class Movie {
     @Column(name = "poster_path", nullable = false, length = 100)
     private String posterPath;
 
+    @Column(name = "trailer_path", nullable = false, length = 100)
+    private String trailerPath;
+
+
     public Movie() {
     }
 
-    public Movie(String title, String genre, String description, Director director, List<Actor> actors, int runtime, String posterPath) {
+    public Movie(String title, String genre, String description, Director director, List<Actor> actors, int runtime, String posterPath, String trailerPath) {
         this.title = title;
         this.genre = genre;
         this.description = description;
@@ -56,6 +60,7 @@ public class Movie {
         this.actors = actors;
         this.runtime = runtime;
         this.posterPath = posterPath;
+        this.trailerPath = trailerPath;
     }
     public Long getId() {
         return id;
@@ -67,6 +72,14 @@ public class Movie {
 
     public String getTitle() {
         return title;
+    }
+
+    public String getTrailerPath() {
+        return trailerPath;
+    }
+
+    public void setTrailerPath(String trailerPath) {
+        this.trailerPath = trailerPath;
     }
 
     public void setTitle(String title) {
@@ -106,6 +119,19 @@ public class Movie {
         this.director = director;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Movie movie = (Movie) o;
+        return getRuntime() == movie.getRuntime() && Objects.equals(getId(), movie.getId()) && Objects.equals(getTitle(), movie.getTitle()) && Objects.equals(getGenre(), movie.getGenre()) && Objects.equals(getDescription(), movie.getDescription()) && Objects.equals(getSessions(), movie.getSessions()) && Objects.equals(getDirector(), movie.getDirector()) && Objects.equals(getActors(), movie.getActors()) && Objects.equals(getPosterPath(), movie.getPosterPath()) && Objects.equals(getTrailerPath(), movie.getTrailerPath());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getTitle(), getGenre(), getDescription(), getSessions(), getDirector(), getActors(), getRuntime(), getPosterPath(), getTrailerPath());
+    }
+
     public List<Actor> getActors() {
         return actors;
     }
@@ -141,16 +167,4 @@ public class Movie {
     }
 
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Movie movie = (Movie) o;
-        return runtime == movie.runtime && Objects.equals(id, movie.id) && Objects.equals(title, movie.title) && Objects.equals(genre, movie.genre) && Objects.equals(description, movie.description) && Objects.equals(director, movie.director) && Objects.equals(actors, movie.actors) && Objects.equals(posterPath, movie.posterPath);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, title, genre, description, director, actors, runtime, posterPath);
-    }
 }
