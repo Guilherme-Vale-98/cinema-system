@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom'
 import { RootState } from '../../redux/store';
-import ingressoWebp from "../../../public/ingresso.webp"
+import ingressoWebp from "../../../src/assets/ingresso.webp"
+import debitCard from "../../../src/assets/debitcard.png"
 import { useGetMovieSessionByDateQuery } from '../../redux/services/api/cinemaApi';
 import { FaMinus, FaPlus, FaUserNinja } from 'react-icons/fa';
 import SeatsGrid from './SeatsGrid';
@@ -139,13 +140,38 @@ const renderTicketSummary = (movie: Movie, seats: Seat[]) => {
                onClick={()=> buySteps > 0 ? setBuysteps(buySteps-1): ''}>VOLTAR</button>
               
               <button 
-              disabled={buySteps > 1}
+              disabled={ selectedSeats.length <= 0 || buySteps > 1 }
               className='bg-blue-600 disabled:bg-gray-400 w-1/2 font-bold text-xl h-9 rounded-xl active:bg-blue-800 shadow-md' onClick={()=> buySteps < 2 ? setBuysteps(buySteps+1): ''}>CONTINUAR</button>
           </div>
       </div>
   )
 }
 
+  const renderTicketConfirmation = () => {
+    return (
+      <div className='rounded-lg w-full flex-col ml-4 overflow-scroll flex h-[600px] p-4 bg-[#111827]'>
+        <span className='text-base font-semibold text-red-500'>Confira o número de ingressos meia-entrada e inteira.</span>
+        <ul>
+          <li className='flex cursor-pointer text-white text-lg mb-2 p-2 items-center rounded-lg bg-[#3b424d]'>
+            <img  className='w-16 h-12'src={debitCard}/>
+            <p className='p-2 ml-4 font-semibold'>Cartão de débito</p>
+          </li>
+          <li className='flex cursor-pointer text-white text-lg mb-2 p-2 items-center rounded-lg bg-[#3b424d]'>
+            <img  className='w-16 h-12'src={debitCard}/>
+            <p className='p-2  ml-4 font-semibold'>Cartão de crédito</p>
+          </li>
+          <li className='flex cursor-pointer text-white text-lg mb-2 p-2 items-center rounded-lg bg-[#3b424d]'>
+            <img  className='w-16 h-12'src={debitCard}/>
+            <p className='p-2 ml-4 font-semibold'>Pix</p>
+          </li>
+            <li className='flex cursor-pointer text-white text-lg mb-2 p-2 items-center rounded-lg bg-[#3b424d]'>
+            <img  className='w-16 h-12'src={debitCard}/>
+            <p className='p-2 ml-4 font-semibold'>Google Pay</p>
+          </li>
+        </ul>
+      </div>
+    );
+  };
 
 
 
@@ -157,6 +183,7 @@ const renderTicketSummary = (movie: Movie, seats: Seat[]) => {
         {renderTicketSummary(movie, selectedSeats)}
         {buySteps === 0 ? renderSeatsGrid(): ''}
         {buySteps === 1 ? renderTicketTypes(): ''}
+        {buySteps === 2 ? renderTicketConfirmation(): ''}
         
       </div>
 

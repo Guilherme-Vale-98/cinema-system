@@ -12,5 +12,5 @@ export type Movie = {
     actors: Actor[];
     runtime: number;
     posterPath: string;
-    trailerPath: String;
+    trailerPath: string;
 }
