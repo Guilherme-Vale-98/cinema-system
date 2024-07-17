@@ -70,8 +70,6 @@ public class SessionController {
             return new ResponseEntity(message, HttpStatus.BAD_REQUEST);
         };
 
-
-
         tickets.forEach(ticket -> ticket.setSession(sessionOptional.get()));
         tickets.forEach(ticket -> ticket.getSeat().setPrice());
 

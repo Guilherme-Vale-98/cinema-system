@@ -16,7 +16,6 @@ public class Seat {
     @Enumerated(EnumType.STRING)
     private SeatEnum seatType;
 
-    @JsonIgnore
     private BigDecimal price;
 
     public String getColumn() {
