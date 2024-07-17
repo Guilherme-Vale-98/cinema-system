@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Movie } from '../../../types/MovieType';
+import { Ticket } from '../../../types/TicketType';
 
 interface GetMovieSessionByDateRequest {
   movieTitle?: string;
@@ -16,8 +17,14 @@ export const cinemaApi = createApi({
     getMovieSessionByDate: builder.query<Movie, GetMovieSessionByDateRequest>({
       query: ({movieTitle, sessionId}) => `/movies/${movieTitle}/${sessionId}`,
     }),
-
+    postTickets: builder.mutation({
+      query: ({sessionId, tickets})=>({
+        url: `/sessions/${sessionId}/tickets`,
+        method: 'POST',
+        body: tickets
+      })
+    })
   }),
 });
 
-export const { useGetMoviesByDateQuery, useGetMovieSessionByDateQuery } = cinemaApi;
+export const { useGetMoviesByDateQuery, useGetMovieSessionByDateQuery, usePostTicketsMutation } = cinemaApi;
