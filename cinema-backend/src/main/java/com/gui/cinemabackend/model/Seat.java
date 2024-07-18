@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -14,6 +16,7 @@ public class Seat {
     private String row;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
     private SeatEnum seatType;
 
     private BigDecimal price;
@@ -33,6 +36,7 @@ public class Seat {
     public void setRow(String row) {
         this.row = row.toUpperCase();
     }
+
 
     public SeatEnum getSeatType() {
         return seatType;
@@ -58,11 +62,11 @@ public class Seat {
     public Seat() {
     }
 
-    public Seat(String column, String row, SeatEnum seatType, BigDecimal price) {
+    public Seat(String column, String row, SeatEnum seatType) {
         this.column = column;
         this.row = row;
         this.seatType = seatType;
-        this.price = price;
+        this.setPrice();
     }
 
     @Override

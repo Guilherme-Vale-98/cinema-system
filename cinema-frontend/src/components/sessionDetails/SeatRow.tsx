@@ -28,7 +28,7 @@ const SeatRow = ({ rowLetter, selectedSeats, setSelectedSeats, takenSeats }: Pro
         setSelectedSeats([...selectedSeats, seat])
     }
     const seats = [...Array(16)].map((_, index) => {
-        const seat: Seat = { row: rowLetter, column: String(index + 1), price: 20, type: "regular" }
+        const seat: Seat = { row: rowLetter, column: String(index + 1), price: 30, seatType: "INTEIRA" }
 
         const isSeatSelected = selectedSeats.some(e => e.column === seat.column && e.row === seat.row)
 

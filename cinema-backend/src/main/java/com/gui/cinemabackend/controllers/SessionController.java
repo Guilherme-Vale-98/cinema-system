@@ -8,6 +8,7 @@ import com.gui.cinemabackend.model.SessionDTO;
 import com.gui.cinemabackend.repositories.MovieRepository;
 import com.gui.cinemabackend.repositories.SessionRepository;
 import com.gui.cinemabackend.repositories.TicketRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -58,6 +59,7 @@ public class SessionController {
 
         boolean notValidTicketSeats = tickets.stream().anyMatch(
                 ticket -> !isSeatValid(ticket.getSeat().getRow(), ticket.getSeat().getColumn()));
+
 
         if(notValidTicketSeats){
             String message = "Invalid seats";

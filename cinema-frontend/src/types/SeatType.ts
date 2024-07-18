@@ -3,6 +3,6 @@
 export type Seat = {
     column: string,
     row: string,
-    type: string,
+    seatType: string,
     price: number
 }

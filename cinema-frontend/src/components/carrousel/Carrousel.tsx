@@ -9,8 +9,19 @@ type Props = {}
 
 const Carrousel = (props: Props) => {
     const [movieListSlice, setMovieListSlice] = useState(movieList);
+    const [moviesView, setMovieView] = useState('Em cartaz')
 
+    const handleCartaz = () => {
+        setMovieView('Em cartaz')
+        return
+    }
+    const handleEmBreve = () => {
+        setMovieView('Em breve')
+        setMovieListSlice([])
+        return
+    }
 
+    
     const handleNextSlide = () => {
         setMovieListSlice((prevList) => {
             const newList = [...prevList];
@@ -41,8 +52,8 @@ const Carrousel = (props: Props) => {
             <div className='flex h-32 w-4/5 mx-auto pb-6 z-10 px-8 justify-between items-end border-b-2'>
                 <h2 className='text-6xl font-bold'>Filmes em destaque</h2>
                 <div className='flex font-semibold gap-10'>
-                    <span className='text-2xl border border-transparent hover:border-b-white'> Em cartaz </span>
-                    <span className='text-2xl hover:border-b'> Em breve </span>
+                    <span onClick={handleCartaz} className={`text-2xl border border-transparent ${moviesView === 'Em cartaz'? "border-b-white": ''}`}> Em cartaz </span>
+                    <span onClick={handleEmBreve} className={`${moviesView === 'Em breve'? "border-b": ''} text-2xl`}> Em breve </span>
             </div>
             </div>
             <div className="relative md:w-full my-[2rem] p-6 overflow-x-hidden">

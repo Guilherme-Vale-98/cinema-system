@@ -64,6 +64,32 @@ const movieList: Movie[] = [
       ],
       runtime: 169,
       posterPath: "https://i.ibb.co/rwJVhPJ/interstellar.webp"
+    },
+    {
+      title: "Interstellar222",
+      genre: "Sci-Fi",
+      description: "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
+      director: { name: "Christopher Nolan" },
+      actors: [
+        { name: "Matthew McConaughey" },
+        { name: "Anne Hathaway" },
+        { name: "Jessica Chastain" }
+      ],
+      runtime: 169,
+      posterPath: "https://i.ibb.co/rwJVhPJ/interstellar.webp"
+    },
+    {
+      title: "Interstellar232",
+      genre: "Sci-Fi",
+      description: "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
+      director: { name: "Christopher Nolan" },
+      actors: [
+        { name: "Matthew McConaughey" },
+        { name: "Anne Hathaway" },
+        { name: "Jessica Chastain" }
+      ],
+      runtime: 169,
+      posterPath: "https://i.ibb.co/rwJVhPJ/interstellar.webp"
     }
   ];
   

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gui.cinemabackend.model.Seat;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 
 import java.util.Objects;
 
@@ -21,6 +22,7 @@ public class Ticket {
     @JoinColumn(name = "user_id", nullable = true)
     private User user;
     @Embedded
+    @Valid
     @AttributeOverrides({
             @AttributeOverride( name = "column", column = @Column(name = "seat_column")),
             @AttributeOverride( name = "row", column = @Column(name = "seat_row")),

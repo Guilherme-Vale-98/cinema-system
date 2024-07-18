@@ -23,7 +23,6 @@ const SessionDetails = (props: Props) => {
   const { data: movie, error, isLoading } = useGetMovieSessionByDateQuery({ movieTitle, sessionId });
   const [countdown, setCountdown] = useState<number | null>(null);
 
-  const navigate = useNavigate()
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -59,7 +58,7 @@ const SessionDetails = (props: Props) => {
   useEffect(() => {
     if (movie) {
       const loadedTakenSeats = movie.sessions[0].tickets?.map(ticket => {
-        const seat: Seat = { row: ticket.seat.row, column: ticket.seat.column, price: 30, type: ticket.seat.type }
+        const seat: Seat = { row: ticket.seat.row, column: ticket.seat.column, price: 30, seatType: ticket.seat.type }
         return seat
       })
       if (loadedTakenSeats) {
@@ -79,8 +78,8 @@ const SessionDetails = (props: Props) => {
     const newSelectedSeats = [...selectedSeats];
     const selectedSeat = newSelectedSeats[index];
 
-    selectedSeat.type = event.target.value as 'meia' | 'inteira';
-    selectedSeat.price = event.target.value === 'meia' ? selectedSeat.price / 2 : selectedSeat.price * 2;
+    selectedSeat.seatType = event.target.value as 'MEIA' | 'INTEIRA';
+    selectedSeat.price = event.target.value === 'MEIA' ? selectedSeat.price / 2 : selectedSeat.price * 2;
 
     newSelectedSeats[index] = selectedSeat;
     setSelectedSeats(newSelectedSeats);
@@ -110,9 +109,9 @@ const SessionDetails = (props: Props) => {
         <div className='after:flex  after:duration-200 after:ease-linear after:transition-all hover:after:text-orange-700 after:items-center after:left-[75%] after:justify-center after:pointer-events-none after:absolute  after:h-10 after:w-10 after:bg-[#3f4c68] after:content-["\25BC"] flex relative items-center text-white justify-center w-40 h-10 overflow-hidden rounded-md '>
           <select
             className='w-full pl-4 appearance-none bg-[#111827] h-10'
-            value={selectedSeat.type} onChange={(event) => handleSelectChange(index, event)}>
-            <option value="inteira">Inteira</option>
-            <option value="meia">Meia</option>
+            value={selectedSeat.seatType} onChange={(event) => handleSelectChange(index, event)}>
+            <option value="INTEIRA">Inteira</option>
+            <option value="MEIA">Meia</option>
           </select>
         </div>
         <span className='flex font-semibold text-gray-200 items-center justify-center 
@@ -225,7 +224,7 @@ const SessionDetails = (props: Props) => {
     );
   };
 
-
+  console.log(selectedSeats)
   return (
     <section className='min-h-[600px] mt-16 p-4 bg-[#3f546e]' >
       {/*        <div className='flex h-32 w-4/5 mx-auto pb-6 z-10 px-8 justify-between items-end border-b-2'> </div>  */}
