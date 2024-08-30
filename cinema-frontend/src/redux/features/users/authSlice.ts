@@ -15,6 +15,7 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     logout: () => {
+      localStorage.removeItem("persist:root");
       return initialState;
     },
     setUser: (state, action: PayloadAction<User>) => {
