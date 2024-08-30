@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { User } from '../../../types/UserType';
+import { RootState } from '../../store';
 
 
 export interface Credentials {
@@ -12,6 +13,13 @@ export const authApi = createApi({
     reducerPath: 'authApi',
     baseQuery: fetchBaseQuery({
       baseUrl: `http://localhost:8080/auth`,
+      prepareHeaders: (headers, { getState }) => {
+        const token = (getState() as RootState).userState.user?.accessToken;
+        if (token) {
+          headers.set('Authorization', `Bearer ${token}`);
+        }
+        return headers;
+      },
     }),
     endpoints: (builder) => ({
       login: builder.mutation< User, Credentials>({
@@ -22,6 +30,9 @@ export const authApi = createApi({
             body: credentials,
           };
         },
+      }),
+      checkRoles: builder.query({
+        query: () => '/userRole',
       }),
       register: builder.mutation({
         query: (userData) => ({
@@ -34,4 +45,4 @@ export const authApi = createApi({
   });
 
 
-  export const { useLoginMutation, useRegisterMutation } = authApi;
+  export const { useLoginMutation, useRegisterMutation, useLazyCheckRolesQuery } = authApi;

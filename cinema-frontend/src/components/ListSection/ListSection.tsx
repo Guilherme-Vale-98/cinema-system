@@ -8,12 +8,6 @@ import { ClipLoader } from 'react-spinners';
 type Props = {}
 
 
-const override: CSSProperties = {
-  display: "block",
-  margin: "0 auto",
-  borderColor: "black",
-};
-
 const ListSection = (props: Props) => {
   const [weekdays, setWeekdays] = useState<Date[]>();
   const dayNames = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
@@ -47,7 +41,6 @@ const ListSection = (props: Props) => {
     setWeekdays(dates);
     setSelectedDate(dates[0]);
   }
-  console.log(movies)
   return (
     <section className='flex text-white bg-[#3f546e]  flex-wrap relative w-full'
     >

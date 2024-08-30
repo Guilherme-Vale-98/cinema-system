@@ -26,9 +26,9 @@ const Account = (props: Props) => {
         try {
             const result: User = await login(credential).unwrap()
             if (result) {
-                setError(null)
-                dispatch(setUser({ user: result }));
-                navigate("/")
+                setError(null);
+                dispatch(setUser(result));
+                navigate("/");
             }
         } catch (err) {
             if ((err as Err).status === 401) {
