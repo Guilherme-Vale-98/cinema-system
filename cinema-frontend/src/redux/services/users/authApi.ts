@@ -1,16 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { User } from '../../../types/UserType';
 
 
 export interface Credentials {
     username: string;
     password: string;
-  }
-  
-export interface UserData {
-    username: string;
-    password: string;
-    email: string;
-    roel?: string[]
   }
   
 
@@ -20,7 +14,7 @@ export const authApi = createApi({
       baseUrl: `http://localhost:8080/auth`,
     }),
     endpoints: (builder) => ({
-      login: builder.mutation({
+      login: builder.mutation< User, Credentials>({
         query(credentials:Credentials) {
           return {
             url: '/login',

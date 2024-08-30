@@ -1,32 +1,27 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { User } from "../../../types/UserType";
+import { useNavigate } from "react-router-dom";
 
-interface AuthState {
-  user?: User | null;
+interface UserState {
+  user: User | null;
 }
 
-const initialState: AuthState = {
+const initialState: UserState = {
   user: null,
 };
 
-export const authSlice = createSlice({
-  name: "authSlice",
+export const userSlice = createSlice({
+  name: "userSlice",
   initialState,
   reducers: {
-    logout: () => initialState,
-    userInfo: (state, action: PayloadAction<AuthState>) => {
+    logout: () => {
+      return initialState;
+    },
+    setUser: (state, action: PayloadAction<UserState>) => {
       state.user = action.payload.user;
     },
   },
 });
 
-export const { logout, userInfo } = authSlice.actions;
-export default  authSlice.reducer;
-
-export interface User {
-  id: number;
-  username: string;
-  email: string;
-  roles: string[];
-  accessToken: string;
-  tokenType: string;
-}
+export const { logout, setUser } = userSlice.actions;
+export default userSlice.reducer;

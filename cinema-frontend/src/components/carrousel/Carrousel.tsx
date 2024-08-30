@@ -17,7 +17,6 @@ const Carrousel = (props: Props) => {
     }
     const handleEmBreve = () => {
         setMovieView('Em breve')
-        setMovieListSlice([])
         return
     }
 

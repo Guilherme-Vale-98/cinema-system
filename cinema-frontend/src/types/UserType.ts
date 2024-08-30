@@ -1,11 +1,12 @@
 import { Role } from "./RoleType";
 import { Ticket } from "./TicketType";
 
-export type User = {
-    id?: number;
+export interface User {
+    id: number;
     username: string;
     email: string;
-    password: string;
-    roles?: Role[];
+    roles: string[];
+    accessToken: string;
+    tokenType: string;
     tickets?: Ticket[];
-}
+  }

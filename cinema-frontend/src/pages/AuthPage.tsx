@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useLoginMutation, useRegisterMutation } from '../redux/services/users/authApi';
-import { User, userInfo } from '../redux/features/users/authSlice';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { testApi } from '../redux/services/test/testApi';
+import { User } from '../types/UserType';
+import { setUser } from '../redux/features/users/authSlice';
 
 
 const LoginForm = () => {
@@ -10,7 +11,7 @@ const LoginForm = () => {
   const [password, setPassword] = useState('');
   const [login, { isLoading }] = useLoginMutation();
   const dispatch = useAppDispatch();
-  const stateUser = useAppSelector(state => state.authState.user);
+  const stateUser = useAppSelector(state => state.userState.user);
   const [name, setname] = useState('');
   const [tryGet, {data: data2}] = testApi.endpoints.getTest.useLazyQuery();
   const [tryGe, {data: data1}] = testApi.endpoints.getTest.useLazyQuery();
@@ -21,7 +22,7 @@ const LoginForm = () => {
     try {
      const response:any = await login({ username, password });
      const user:User = response.data;
-     dispatch(userInfo({user}));
+     dispatch(setUser({user}));
      tryGet('user');
      tryGe('all')
      tryG('admin')
