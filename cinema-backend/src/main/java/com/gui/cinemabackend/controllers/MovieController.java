@@ -103,8 +103,9 @@ public class MovieController {
         List<Movie> filteredMovies = movies.stream().peek(movie -> {
             List<Session> f = movie.getSessions().stream()
                     .filter(session ->
-                            session.getStartTime().after(startOfDay)
-                                    && session.getStartTime().before(endOfDay)
+                            session.getStartTime().after(new Date())
+                                    && session.getStartTime().after(startOfDay)
+                                        && session.getStartTime().before(endOfDay)
                     )
                     .collect(Collectors.toList());
             movie.setSessions(f);

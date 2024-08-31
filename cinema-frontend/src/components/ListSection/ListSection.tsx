@@ -4,6 +4,7 @@ import { useGetMoviesByDateQuery } from '../../redux/services/api/cinemaApi';
 import { ApiError, Session } from '../../types/SessionType';
 import { Movie } from '../../types/MovieType';
 import { ClipLoader } from 'react-spinners';
+import ErrorComponent from '../error/ErrorComponent';
 
 type Props = {}
 
@@ -19,18 +20,6 @@ const ListSection = (props: Props) => {
   }
 
   const formatedDate = formatDate(selectedDate);
-
-
-  const {data: movies, error, isLoading} = useGetMoviesByDateQuery(formatedDate ?? '',{
-    skip: !selectedDate,
-  })
-
-
-  useEffect(() => {
-    getdaysDate();
-  }, [])
-
-
   const getdaysDate = () => {
     const dates = [];
     for (let index = 0; index < 7; index++) {
@@ -41,6 +30,15 @@ const ListSection = (props: Props) => {
     setWeekdays(dates);
     setSelectedDate(dates[0]);
   }
+  useEffect(() => {
+    getdaysDate();
+  }, [])
+
+
+  const { data: movies, error, isLoading } = useGetMoviesByDateQuery(formatedDate ?? '', {
+    skip: !selectedDate,
+  })
+
   return (
     <section className='flex text-white bg-[#3f546e]  flex-wrap relative w-full'
     >
@@ -69,7 +67,12 @@ const ListSection = (props: Props) => {
           <ClipLoader />
         </div>}
         {error && 'data' in error && <p>{(error.data as ApiError).message}</p>}
-        {movies && movies.map((movie: Movie, index: number) => <ListSectionItem movie={movie} key={index}/>)}
+        {(movies && movies.length) === 0 && <div className="bg-[#3f546e] flex items-center justify-start w-full">
+          <div className='border-8 rounded-md w-1/2 border-amber-900 flex items-center justify-center bg-[#3b424d] text-3xl flex-wrap font-bold text-white '>
+            <ErrorComponent errorMessage="Nenhum filme nesta data" />
+          </div>
+        </div>}
+        {movies && movies.map((movie: Movie, index: number) => <ListSectionItem movie={movie} key={index} />)}
       </ul>
     </section>
   )
