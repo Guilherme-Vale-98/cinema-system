@@ -17,11 +17,11 @@ const Profile = (props: Props) => {
 
   useEffect(() => {
     if (!user) {
-      navigate("/conta");
+      navigate('/conta');
       return
     }
     triggerCheckRoles({});
-  }, [user])
+  }, [])
 
   useEffect(() => {
     if (rolesData) {
@@ -30,7 +30,7 @@ const Profile = (props: Props) => {
   }, [rolesData])
 
 
-  if (isSuccess) {
+  if (user && isSuccess) {
     return (<div className='mt-[88px] h-[1000px] text-4xl'>Bem vindo, {user?.username}! you are a {user?.roles[0]}
       {user?.roles[0] == "ROLE_ADMIN" ? <div>ADMIN ONLY ELEMENTS</div> : ""}
     </div>)

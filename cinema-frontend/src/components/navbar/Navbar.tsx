@@ -18,7 +18,6 @@ const Navbar = (props: Props) => {
 
     const logOut = () => {
         dispatch(logout());
-        navigate("/conta")
     }
 
 
@@ -37,9 +36,9 @@ const Navbar = (props: Props) => {
                                     <FaUser className='text-2xl' />
                                 </div>
                             </NavLink>
-                            <div onClick={() => logOut()} className='text-white flex justify-center cursor-pointer items-center bg-red-600 rounded-full w-10 h-10'>
+                            <a href="/conta"  onClick={() => logOut()} className='text-white flex justify-center cursor-pointer items-center bg-red-600 rounded-full w-10 h-10'>
                                 <FaDoorOpen className='text-2xl' />
-                            </div>
+                            </a>
                         </>)  : 
                         
                         (<NavLink to="/conta">

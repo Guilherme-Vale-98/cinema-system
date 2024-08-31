@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Navigate, useNavigate, useParams } from 'react-router-dom'
 import ingressoWebp from "../../../src/assets/ingresso.webp"
 import debitCard from "../../../src/assets/debitcard.png"
 import { useGetMovieSessionByDateQuery, usePostTicketsMutation } from '../../redux/services/api/cinemaApi';
@@ -7,6 +7,7 @@ import SeatsGrid from './SeatsGrid';
 import { Seat } from '../../types/SeatType';
 import { Movie } from '../../types/MovieType';
 import { ClipLoader } from 'react-spinners';
+import ErrorComponent from '../error/ErrorComponent';
 
 
 type Props = {}
@@ -22,19 +23,27 @@ const SessionDetails = (props: Props) => {
   const [takenSeats, setTakenSeats] = useState<Seat[]>([]);
   const { data: movie, error, isLoading } = useGetMovieSessionByDateQuery({ movieTitle, sessionId });
   const [countdown, setCountdown] = useState<number | null>(null);
-
+  const navigate = useNavigate();
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (countdown !== null) {
       if (countdown > 0) {
         timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      } else if (error){
+        navigate("/")
       } else {
-        window.location.reload(); 
+        window.location.reload();
       }
     }
     return () => clearTimeout(timer);
   }, [countdown]);
+
+  useEffect(() => {
+    if (error) {
+      setCountdown(3);
+    }
+  }, [error])
 
 
   const handlePostTickets = async () => {
@@ -46,7 +55,7 @@ const SessionDetails = (props: Props) => {
       try {
         const tickets = selectedSeats.map(seat => ({ seat }))
         await postTickets({ sessionId, tickets }).unwrap();
-        
+
       } catch (err) {
         console.error('Failed to create tickets: ', err);
       }
@@ -69,7 +78,17 @@ const SessionDetails = (props: Props) => {
 
 
   if (isLoading) return <div className='min-h-[600px] flex items-center justify-center mt-16 p-4 bg-[#3f546e] '><ClipLoader size={50} color='blue' /></div>;
-  if (error) return <p>Error: {(error as any).message}</p>;
+  if (error) {
+    console.log(error)
+    return (
+      <div className="bg-[#3f546e] flex items-center justify-center h-screen w-full">
+        <div className='border-8 rounded-md w-1/2 border-amber-900 flex items-center justify-center bg-[#3b424d] text-3xl flex-wrap font-bold text-white '>
+          <ErrorComponent errorMessage={(error as any).data.message} />
+          <p className='w-full mb-8 text-center'>Voltando a página principal em {countdown}...</p>
+        </div>
+      </div>)
+  }
+
   if (!movie) return <p>Movie not found</p>;
 
 
@@ -214,7 +233,7 @@ const SessionDetails = (props: Props) => {
 
         {isPostingTickets ? <div className='flex h-full items-center justify-center'><ClipLoader size={60} color='blue' /></div> :
           <div className='border-8 rounded-md w-full h-1/3  border-amber-900 flex items-center justify-center text-3xl flex-wrap font-bold text-white bg-[#3f546e]'>
-            <span className='w-full text-center'>{postTicketsError? 'Um erro ocorreu tente novamente.': 'Compra concluida'}</span>
+            <span className='w-full text-center'>{postTicketsError ? 'Um erro ocorreu tente novamente.' : 'Compra concluida'}</span>
             <div className='w-full text-xl text-center'>Redirecionando em {countdown}...</div>
           </div>
 
@@ -224,7 +243,6 @@ const SessionDetails = (props: Props) => {
     );
   };
 
-  console.log(selectedSeats)
   return (
     <section className='min-h-[600px] mt-16 p-4 bg-[#3f546e]' >
       {/*        <div className='flex h-32 w-4/5 mx-auto pb-6 z-10 px-8 justify-between items-end border-b-2'> </div>  */}

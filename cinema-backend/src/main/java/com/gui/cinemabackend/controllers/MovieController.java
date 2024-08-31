@@ -116,6 +116,7 @@ public class MovieController {
     public ResponseEntity<Movie> getMovieByNameAndSessionDate(
             @PathVariable("sessionId") Long sessionId,
             @PathVariable("movieTitle") String movieTitle){
+
             Optional<Movie> movie = movieRepository.findByTitle(movieTitle);
             if (movie.isEmpty()){
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum filme com este nome.");
@@ -127,6 +128,11 @@ public class MovieController {
             if (movie.get().getSessions().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sessão não encontrada.");
             }
+            Date currentDate = new Date();
+            Date sessionStartTime = movie.get().getSessions().get(0).getStartTime();
+            if(currentDate.after(sessionStartTime)){
+               throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Movie Session expired");
+            };
             return new ResponseEntity<>(movie.get(), HttpStatus.OK);
 
     }
