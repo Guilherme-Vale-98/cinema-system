@@ -34,8 +34,12 @@ public class SessionController {
 
     @PostMapping
     public ResponseEntity createNewSession(@RequestBody SessionDTO sessionDTO){
-        Movie movie = movieRepository.findByTitle(sessionDTO.getMovieTitle()).get();
-        Session session = new Session(null, movie, new ArrayList<>(), sessionDTO.getStartTime());
+        Optional<Movie> movie = movieRepository.findByTitle(sessionDTO.getMovieTitle());
+
+        if(movie.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No movie with such title.");
+        }
+        Session session = new Session(null, movie.get(), new ArrayList<>(), sessionDTO.getStartTime());
         System.out.println(sessionDTO.getStartTime());
 
         sessionRepository.save(session);
@@ -50,6 +54,13 @@ public class SessionController {
             String message = "Session id not found";
             return new ResponseEntity(message, HttpStatus.NOT_FOUND);
         }
+        Date currentDate = new Date();
+        Date sessionStartTime = sessionOptional.get().getStartTime();
+
+        if(currentDate.after(sessionStartTime)){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Desculpe, sessão expirada.");
+        }
+
 
         boolean ticketAlreadyInRepository = tickets.stream().anyMatch(
                 ticket -> ticketRepository
@@ -90,7 +101,6 @@ public class SessionController {
         }
         return new ResponseEntity(ticketOptional.get(), HttpStatus.OK);
     }
-
 
     @GetMapping("/{sessionId}")
     public ResponseEntity getSessionById(@PathVariable("sessionId") Long sessionId){

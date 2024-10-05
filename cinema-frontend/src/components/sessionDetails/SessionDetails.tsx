@@ -30,9 +30,12 @@ const SessionDetails = (props: Props) => {
     if (countdown !== null) {
       if (countdown > 0) {
         timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-      } else if (error){
+      } else if (postTicketsError){
+        navigate("/sessoes")
+      }else if (error){
         navigate("/")
-      } else {
+      } 
+      else {
         window.location.reload();
       }
     }
@@ -40,10 +43,10 @@ const SessionDetails = (props: Props) => {
   }, [countdown]);
 
   useEffect(() => {
-    if (error) {
+    if (error || postTicketsError) {
       setCountdown(3);
     }
-  }, [error])
+  }, [error, postTicketsError])
 
 
   const handlePostTickets = async () => {
@@ -227,13 +230,14 @@ const SessionDetails = (props: Props) => {
     );
   };
 
+
   const renderPaymentConfirmation = () => {
     return (
       <div className='rounded-lg hide-scrollbar w-full flex-col ml-4 overflow-scroll flex h-[600px] p-4 bg-[#111827]'>
 
         {isPostingTickets ? <div className='flex h-full items-center justify-center'><ClipLoader size={60} color='blue' /></div> :
           <div className='border-8 rounded-md w-full h-1/3  border-amber-900 flex items-center justify-center text-3xl flex-wrap font-bold text-white bg-[#3f546e]'>
-            <span className='w-full text-center'>{postTicketsError ? 'Um erro ocorreu tente novamente.' : 'Compra concluida'}</span>
+            <span className='w-full text-center'>{postTicketsError ? (postTicketsError as any).data.message : 'Compra concluida'}</span>
             <div className='w-full text-xl text-center'>Redirecionando em {countdown}...</div>
           </div>
 
