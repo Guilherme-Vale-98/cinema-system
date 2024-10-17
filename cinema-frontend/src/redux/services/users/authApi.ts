@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { User } from '../../../types/UserType';
 import { RootState } from '../../store';
+import { UserUpdateInfo } from '../../../components/forms/EditProfileForm';
 
 
 export interface Credentials {
@@ -18,7 +19,6 @@ export const authApi = createApi({
         if (token) {
           headers.set('Authorization', `Bearer ${token}`);
         }
-        console.log(headers)
         return headers;
       },
     }),
@@ -35,6 +35,13 @@ export const authApi = createApi({
       checkRoles: builder.query({
         query: () => '/userRole',
       }),
+      updateUser: builder.mutation<User, UserUpdateInfo>({
+        query: (userInfo) => ({
+          url: "/updateUser",
+          method: "POST",
+          body: userInfo
+        })
+      }),
       register: builder.mutation({
         query: (userData) => ({
           url: '/signup',
@@ -46,4 +53,4 @@ export const authApi = createApi({
   });
 
 
-  export const { useLoginMutation, useRegisterMutation, useLazyCheckRolesQuery } = authApi;
+  export const { useLoginMutation, useRegisterMutation, useLazyCheckRolesQuery, useUpdateUserMutation} = authApi;

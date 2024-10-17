@@ -13,6 +13,7 @@ import com.gui.cinemabackend.entities.Role;
 import com.gui.cinemabackend.entities.User;
 import com.gui.cinemabackend.payloads.requests.LoginRequest;
 import com.gui.cinemabackend.payloads.requests.SignupRequest;
+import com.gui.cinemabackend.payloads.requests.UpdateRequest;
 import com.gui.cinemabackend.payloads.responses.JwtResponse;
 import com.gui.cinemabackend.payloads.responses.MessageResponse;
 import com.gui.cinemabackend.repositories.RoleRepository;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import jakarta.validation.Valid;
+import org.springframework.web.server.ResponseStatusException;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -117,6 +119,20 @@ public class AuthController {
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 
+    @PostMapping("/updateUser")
+    public ResponseEntity<?> updateUser(@Valid @RequestBody UpdateRequest updateRequest) {
+           User user = userRepository.findById(updateRequest.getId())
+                   .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"nenhum usuario com este id"));
+           user.setUsername(updateRequest.getUsername());
+           user.setEmail(updateRequest.getEmail());
+           if(updateRequest.getPassword() != null && !updateRequest.getPassword().isEmpty()){
+                user.setPassword(encoder.encode(updateRequest.getPassword()));
+                userRepository.save(user);
+                return ResponseEntity.ok(new MessageResponse("User updated successfully!"));
+           }
+
+           return ResponseEntity.badRequest().body("Bad request");
+    }
 
     @GetMapping("/userRole")
     public ResponseEntity<?> checkUserRole(HttpServletRequest request) {
