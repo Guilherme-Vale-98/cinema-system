@@ -3,11 +3,14 @@ package com.gui.cinemabackend.controllers;
 import com.gui.cinemabackend.entities.Movie;
 import com.gui.cinemabackend.entities.Session;
 import com.gui.cinemabackend.entities.Ticket;
+import com.gui.cinemabackend.entities.User;
 import com.gui.cinemabackend.model.Seat;
 import com.gui.cinemabackend.model.SessionDTO;
+import com.gui.cinemabackend.model.TicketDTO;
 import com.gui.cinemabackend.repositories.MovieRepository;
 import com.gui.cinemabackend.repositories.SessionRepository;
 import com.gui.cinemabackend.repositories.TicketRepository;
+import com.gui.cinemabackend.repositories.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -26,6 +29,8 @@ import java.util.*;
 public class SessionController {
     @Autowired
     MovieRepository movieRepository;
+    @Autowired
+    UserRepository userRepository;
     @Autowired
     SessionRepository sessionRepository;
     @Autowired
@@ -48,7 +53,8 @@ public class SessionController {
 
     @PostMapping("/{sessionId}/tickets")
     public ResponseEntity createNewTicket(@PathVariable("sessionId") Long sessionId,
-                                          @RequestBody List<Ticket> tickets){
+                                          @RequestBody List<TicketDTO> ticketsDTO){
+
         Optional<Session> sessionOptional = sessionRepository.findById(sessionId);
         if (sessionOptional.isEmpty()){
             String message = "Session id not found";
@@ -62,13 +68,14 @@ public class SessionController {
         }
 
 
-        boolean ticketAlreadyInRepository = tickets.stream().anyMatch(
+        boolean ticketAlreadyInRepository = ticketsDTO.stream().anyMatch(
                 ticket -> ticketRepository
                         .findBySessionAndSeat(sessionOptional.get(),
-                                ticket.getSeat().getRow(), ticket.getSeat().getColumn()).isPresent()
+                                ticket.getSeat().getRow(),
+                                ticket.getSeat().getColumn()).isPresent()
                 );
 
-        boolean notValidTicketSeats = tickets.stream().anyMatch(
+        boolean notValidTicketSeats = ticketsDTO.stream().anyMatch(
                 ticket -> !isSeatValid(ticket.getSeat().getRow(), ticket.getSeat().getColumn()));
 
 
@@ -83,8 +90,22 @@ public class SessionController {
             return new ResponseEntity(message, HttpStatus.BAD_REQUEST);
         };
 
-        tickets.forEach(ticket -> ticket.setSession(sessionOptional.get()));
-        tickets.forEach(ticket -> ticket.getSeat().setPrice());
+        List<Ticket> tickets = new ArrayList<>();
+
+        for (TicketDTO ticketDTO : ticketsDTO) {
+            Ticket ticket = new Ticket();
+
+            if(ticketDTO.getUserId() != null){
+                Optional<User> userOptional = userRepository.findById(ticketDTO.getUserId());
+                userOptional.ifPresent(ticket::setUser);
+            }
+            ticket.setSession(sessionOptional.get());
+            ticket.setSeat(ticketDTO.getSeat());
+            ticket.getSeat().setPrice();
+
+            tickets.add(ticket);
+        }
+
 
         ticketRepository.saveAll(tickets);
         sessionOptional.get().getTickets().addAll(tickets);
