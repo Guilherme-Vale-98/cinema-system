@@ -141,4 +141,38 @@ public class SessionController {
         }
         return row.matches("[A-J]");
     }
+    @GetMapping("tickets/user/{userId}")
+    public ResponseEntity getUserTickets(@PathVariable("userId") Long userId){
+
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isEmpty()){
+            String message = "User id not found";
+            return new ResponseEntity(message, HttpStatus.NOT_FOUND);
+        }
+
+        List<Ticket> tickets = ticketRepository.findByUser(userOptional.get());
+        List<TicketDTO> ticketsDTO = tickets.stream()
+                .map(ticket -> new TicketDTO(userOptional.get().getId(), ticket.getSeat(), ticket.getSession().getId())).toList();
+        return new ResponseEntity(ticketsDTO,HttpStatus.OK);
+    }
+    @GetMapping("/{sessionId}/tickets/user/{userId}")
+    public ResponseEntity getTicketsByUserAndSession(@PathVariable("sessionId") Long sessionId, @PathVariable("userId") Long userId){
+        Optional<Session> sessionOptional = sessionRepository.findById(sessionId);
+
+        if (sessionOptional.isEmpty()){
+            String message = "Session id not found";
+            return new ResponseEntity(message, HttpStatus.NOT_FOUND);
+        }
+
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isEmpty()){
+            String message = "User id not found";
+            return new ResponseEntity(message, HttpStatus.NOT_FOUND);
+        }
+
+        List<Ticket> tickets = ticketRepository.findByUserAndSession(userOptional.get(), sessionOptional.get());
+        List<TicketDTO> ticketsDTO = tickets.stream()
+                .map(ticket -> new TicketDTO(userOptional.get().getId(), ticket.getSeat(), ticket.getSession().getId())).toList();
+        return new ResponseEntity(ticketsDTO,HttpStatus.OK);
+    }
 }
