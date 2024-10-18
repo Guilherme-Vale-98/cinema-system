@@ -4,7 +4,7 @@ import { User } from "./UserType";
 export type Ticket = {
     id?: number;
     session: Session;
-    user?: User;
+    userId?: number;
     seat: Seat;
 }
 

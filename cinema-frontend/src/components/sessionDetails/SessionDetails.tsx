@@ -8,6 +8,9 @@ import { Seat } from '../../types/SeatType';
 import { Movie } from '../../types/MovieType';
 import { ClipLoader } from 'react-spinners';
 import ErrorComponent from '../error/ErrorComponent';
+import { useAppSelector } from '../../redux/hooks';
+import { RootState } from '../../redux/store';
+
 
 
 type Props = {}
@@ -22,6 +25,7 @@ const SessionDetails = (props: Props) => {
   const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]);
   const [takenSeats, setTakenSeats] = useState<Seat[]>([]);
   const { data: movie, error, isLoading } = useGetMovieSessionByDateQuery({ movieTitle, sessionId });
+  const user = useAppSelector((state: RootState) => state.userState.user);
   const [countdown, setCountdown] = useState<number | null>(null);
   const navigate = useNavigate();
 
@@ -50,13 +54,12 @@ const SessionDetails = (props: Props) => {
 
 
   const handlePostTickets = async () => {
-
     if (buySteps < 3) {
       setBuysteps(buySteps + 1)
     }
     if (buySteps === 2) {
       try {
-        const tickets = selectedSeats.map(seat => ({ seat }))
+        const tickets = selectedSeats.map(seat => ({ userId: user?.id, seat}))
         await postTickets({ sessionId, tickets }).unwrap();
 
       } catch (err) {
