@@ -14,9 +14,7 @@ const MovieCard = ({ movie }: Props) => {
                     <h2 className='font-bold cursor-pointer text-center hover:text-red-600 duration-200 text-3xl'>{movie.title}</h2>
                 </div>
                 <span className='text-lg w-full font-[520] text-gray-300 text-center'>{Math.floor(movie.runtime / 60)} HR {movie.runtime % 60} MIN</span>
-
             </div>
-
         </div>
     )
 }

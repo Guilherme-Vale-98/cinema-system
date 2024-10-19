@@ -23,8 +23,11 @@ export const cinemaApi = createApi({
         method: 'POST',
         body: tickets
       })
+    }),
+    getTicketsByUserId: builder.query({
+      query: (userId) => `/sessions/tickets/user/${userId}` 
     })
   }),
 });
 
-export const { useGetMoviesByDateQuery, useGetMovieSessionByDateQuery, usePostTicketsMutation } = cinemaApi;
+export const { useGetMoviesByDateQuery, useGetMovieSessionByDateQuery, usePostTicketsMutation, useGetTicketsByUserIdQuery } = cinemaApi;

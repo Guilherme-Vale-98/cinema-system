@@ -8,6 +8,7 @@ import { ClipLoader } from 'react-spinners'
 import ErrorComponent from '../components/error/ErrorComponent'
 import { useForm } from 'react-hook-form'
 import EditProfileForm from '../components/forms/EditProfileForm'
+import TicketHistory from '../components/ticket/TicketHistory'
 
 type Props = {}
 
@@ -48,11 +49,8 @@ const Profile = (props: Props) => {
         return <EditProfileForm user={user} setMenuState={setMenuState}/>
       
       case MenuState.TicketHistory:
-        return (<div className='p-32 bg-[#3f546e] w-full '>
-          <div className='border-8 p-4 bg-gray-900 rounded-md w-full border-amber-900  text-3xl flex-wrap font-bold text-white'>
-            <div className='text-center'>Ticket History, {user.username}</div>
-          </div>
-        </div>)
+        return <TicketHistory setMenuState={setMenuState}/>
+
       case MenuState.PaymentMethods:
         return (<div className='p-32 bg-[#3f546e] w-full '>
           <div className='border-8 p-4 bg-gray-900 rounded-md w-full border-amber-900  text-3xl flex-wrap font-bold text-white'>
