@@ -152,7 +152,11 @@ public class SessionController {
 
         List<Ticket> tickets = ticketRepository.findByUser(userOptional.get());
         List<TicketDTO> ticketsDTO = tickets.stream()
-                .map(ticket -> new TicketDTO(userOptional.get().getId(), ticket.getSeat(), ticket.getSession().getId())).toList();
+                .map(ticket -> new TicketDTO( userOptional.get().getId(),
+                        ticket.getSeat(),
+                        ticket.getSession().getMovie().getTitle(),
+                        ticket.getSession().getStartTime()
+                        )).toList();
         return new ResponseEntity(ticketsDTO,HttpStatus.OK);
     }
     @GetMapping("/{sessionId}/tickets/user/{userId}")
@@ -172,7 +176,12 @@ public class SessionController {
 
         List<Ticket> tickets = ticketRepository.findByUserAndSession(userOptional.get(), sessionOptional.get());
         List<TicketDTO> ticketsDTO = tickets.stream()
-                .map(ticket -> new TicketDTO(userOptional.get().getId(), ticket.getSeat(), ticket.getSession().getId())).toList();
+                .map(ticket -> new TicketDTO(
+                        userOptional.get().getId(),
+                        ticket.getSeat(),
+                        ticket.getSession().getMovie().getTitle(),
+                        ticket.getSession().getStartTime()
+                        )).toList();
         return new ResponseEntity(ticketsDTO,HttpStatus.OK);
     }
 }

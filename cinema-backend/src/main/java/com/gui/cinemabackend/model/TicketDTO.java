@@ -1,18 +1,24 @@
 package com.gui.cinemabackend.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Date;
+
 public class TicketDTO {
     private Long userId;
-
-    private Long sessionId;
+    private String movieTitle;
     private Seat seat;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+    private Date startTime;
 
     public TicketDTO() {
     }
 
-    public TicketDTO(Long userId, Seat seat, Long sessionId) {
+    public TicketDTO(Long userId, Seat seat, String movieTitle, Date startTime) {
         this.userId = userId;
-        this.sessionId = sessionId;
+        this.movieTitle = movieTitle;
         this.seat = seat;
+        this.startTime = startTime;
     }
 
     public Long getUserId() {
@@ -31,11 +37,19 @@ public class TicketDTO {
         this.seat = seat;
     }
 
-    public Long getSessionId() {
-        return sessionId;
+    public String getMovieTitle() {
+        return movieTitle;
     }
 
-    public void setSessionId(Long sessionId) {
-        this.sessionId = sessionId;
+    public void setMovieTitle(String movieTitle) {
+        this.movieTitle = movieTitle;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
     }
 }
