@@ -12,11 +12,14 @@ import AboutUs from './pages/AboutUs'
 import Footer from './components/footer/Footer'
 import SessionDetails from './components/sessionDetails/SessionDetails'
 import Account from './pages/Account'
-import Profile from './pages/Profile'
+import UserProfile from './pages/UserProfile'
+import { useAppSelector } from './redux/hooks'
+import { RootState } from './redux/store'
+import AdminProfile from './pages/AdminProfile'
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  const user = useAppSelector((state: RootState) => state.userState.user);
+  
   return (
     <>        
       <Navbar></Navbar>
@@ -26,7 +29,8 @@ function App() {
         <Route path='/promocoes' element={<Offers/>}></Route>
         <Route path='/sobre' element={<AboutUs/>}></Route>
         <Route path='/conta' element={<Account/>}></Route>
-        <Route path='/perfil' element={<Profile/>}></Route>
+        <Route path='/perfil' 
+            element={user?.roles.includes("ROLE_ADMIN")? <AdminProfile/> : <UserProfile/>}></Route>
         <Route path="/sessoes/:movieTitle/:sessionId" element={<SessionDetails/>} />
       </Routes>
       <Footer></Footer>

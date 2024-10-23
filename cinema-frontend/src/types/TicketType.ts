@@ -1,5 +1,4 @@
 import { Session } from "./SessionType";
-import { User } from "./UserType";
 
 export type Ticket = {
     id?: number;

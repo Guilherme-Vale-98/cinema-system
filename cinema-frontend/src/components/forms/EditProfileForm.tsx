@@ -5,7 +5,7 @@ import { User } from '../../types/UserType';
 import { useAppDispatch } from '../../redux/hooks';
 import { useNavigate } from 'react-router-dom';
 import { setUser } from '../../redux/features/users/authSlice';
-import { MenuState } from '../../pages/Profile';
+import { UserMenuState } from '../../types/MenuState';
 
 type Props = {
     user: User,
@@ -33,7 +33,7 @@ const EditProfileForm = ({ user, setMenuState }: Props) => {
             const loginResult: User = await login({ username: formData.user, password: formData.password }).unwrap()
             if (updateResult && loginResult) {
                 dispatch(setUser(loginResult));
-                setMenuState(MenuState.Initial);
+                setMenuState(UserMenuState.Initial);
             }
         } catch (err) {
             console.log(err);
@@ -92,7 +92,7 @@ const EditProfileForm = ({ user, setMenuState }: Props) => {
                         {errors.confirmPassword && <p className='text-red-500 mt-2'>{errors.confirmPassword.message as string}</p>}
                     </div>
                     <div className="flex gap-8">
-                        <button onClick={() => setMenuState(MenuState.Initial)}
+                        <button onClick={() => setMenuState(UserMenuState.Initial)}
                             type="submit" className='bg-red-500 w-1/2 hover:bg-red-600 text-white font-bold px-4 rounded-md'>
                             cancelar
                         </button>

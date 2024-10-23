@@ -14,6 +14,9 @@ export const cinemaApi = createApi({
     getMoviesByDate: builder.query<Movie[], string>({
       query: (date) => `/movies/session/${date}`,
     }),
+    getFeaturedMovies: builder.query({
+      query: () => "/movies/featured"
+    }),
     getMovieSessionByDate: builder.query<Movie, GetMovieSessionByDateRequest>({
       query: ({movieTitle, sessionId}) => `/movies/${movieTitle}/${sessionId}`,
     }),
@@ -30,4 +33,4 @@ export const cinemaApi = createApi({
   }),
 });
 
-export const { useGetMoviesByDateQuery, useGetMovieSessionByDateQuery, usePostTicketsMutation, useGetTicketsByUserIdQuery } = cinemaApi;
+export const { useGetMoviesByDateQuery, useGetMovieSessionByDateQuery, usePostTicketsMutation, useGetTicketsByUserIdQuery, useGetFeaturedMoviesQuery} = cinemaApi;
