@@ -3,6 +3,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Type;
+import org.hibernate.type.TrueFalseConverter;
+import org.hibernate.type.YesNoConverter;
 
 import java.util.List;
 import java.util.Objects;
@@ -17,6 +20,10 @@ public class Movie {
 
     @Column(name = "title", nullable = false, length = 100)
     private String title;
+
+    @Column(name = "is_featured", nullable = false)
+    @Convert(converter = TrueFalseConverter.class)
+    private boolean isFeatured;
 
     @Column(name = "genre", nullable = false, length = 30)
     private String genre;
@@ -52,9 +59,10 @@ public class Movie {
     public Movie() {
     }
 
-    public Movie(String title, String genre, String description, Director director, List<Actor> actors, int runtime, String posterPath, String trailerPath) {
+    public Movie(String title, String genre, String description, Director director,boolean isFeatured, List<Actor> actors, int runtime, String posterPath, String trailerPath) {
         this.title = title;
         this.genre = genre;
+        this.isFeatured = isFeatured;
         this.description = description;
         this.director = director;
         this.actors = actors;
@@ -124,12 +132,12 @@ public class Movie {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Movie movie = (Movie) o;
-        return getRuntime() == movie.getRuntime() && Objects.equals(getId(), movie.getId()) && Objects.equals(getTitle(), movie.getTitle()) && Objects.equals(getGenre(), movie.getGenre()) && Objects.equals(getDescription(), movie.getDescription()) && Objects.equals(getSessions(), movie.getSessions()) && Objects.equals(getDirector(), movie.getDirector()) && Objects.equals(getActors(), movie.getActors()) && Objects.equals(getPosterPath(), movie.getPosterPath()) && Objects.equals(getTrailerPath(), movie.getTrailerPath());
+        return isFeatured() == movie.isFeatured() && getRuntime() == movie.getRuntime() && Objects.equals(getId(), movie.getId()) && Objects.equals(getTitle(), movie.getTitle()) && Objects.equals(getGenre(), movie.getGenre()) && Objects.equals(getDescription(), movie.getDescription()) && Objects.equals(getSessions(), movie.getSessions()) && Objects.equals(getDirector(), movie.getDirector()) && Objects.equals(getActors(), movie.getActors()) && Objects.equals(getPosterPath(), movie.getPosterPath()) && Objects.equals(getTrailerPath(), movie.getTrailerPath());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getTitle(), getGenre(), getDescription(), getSessions(), getDirector(), getActors(), getRuntime(), getPosterPath(), getTrailerPath());
+        return Objects.hash(getId(), getTitle(), isFeatured(), getGenre(), getDescription(), getSessions(), getDirector(), getActors(), getRuntime(), getPosterPath(), getTrailerPath());
     }
 
     public List<Actor> getActors() {
@@ -166,5 +174,11 @@ public class Movie {
         actor.getMovies().remove(this);
     }
 
+    public boolean isFeatured() {
+        return isFeatured;
+    }
 
+    public void setIsFeatured(boolean isFeatured) {
+        this.isFeatured = isFeatured;
+    }
 }

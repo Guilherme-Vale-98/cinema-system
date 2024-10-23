@@ -137,6 +137,13 @@ public class MovieController {
             return new ResponseEntity<>(movie.get(), HttpStatus.OK);
 
     }
+    @GetMapping("/featured")
+    public ResponseEntity<List<Movie>> getFeaturedMovies(){
 
+       List<Movie> movies= movieRepository.findByIsFeatured(true);
+
+       return new ResponseEntity<>(movies, HttpStatus.OK);
+
+    }
 
 }
