@@ -33,6 +33,8 @@ public class JwtUtil {
 
         return Jwts.builder()
                 .setSubject((userPrincipal.getUsername()))
+                .claim("role", userPrincipal.getAuthorities())
+                .claim("id", userPrincipal.getId())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(key(), SignatureAlgorithm.HS256)
@@ -46,6 +48,15 @@ public class JwtUtil {
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key()).build()
                 .parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public Long getUserIdFromJwtToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("id", Long.class);
     }
 
     public boolean validateJwtToken(String authToken) {

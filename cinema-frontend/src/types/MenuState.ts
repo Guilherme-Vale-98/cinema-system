@@ -8,6 +8,8 @@ export enum UserMenuState {
 export enum AdminMenuState {
     Initial = "initial",
     EditProfile =  "Editar Conta",
-    AddAdmin = "Adicionar Admin"
+    AddAdmin = "Adicionar Admin",
+    EditMovies = "Editar filmes",
+    MovieStats = "Estatísticas dos filmes"
   }
   

@@ -24,7 +24,6 @@ const UserProfile = (props: Props) => {
   useEffect(() => {
     if (!user) {
       navigate('/conta');
-      return
     }
     triggerCheckRoles({});
   }, [])
@@ -35,7 +34,14 @@ const UserProfile = (props: Props) => {
     }
   }, [rolesData])
 
-  if (user && isSuccess) {
+  if(!user || error){
+    console.log(error)
+    return (<div className=" flex items-center justify-center h-screen w-full">
+      <ErrorComponent errorMessage={(error as any).data} />
+    </div>)
+  }
+
+  if (user.accessToken && isSuccess) {
     switch (menuState) {
       case UserMenuState.EditProfile:
         return <EditProfileForm user={user} setMenuState={setMenuState}/>
@@ -67,14 +73,6 @@ const UserProfile = (props: Props) => {
         )
     }
 
-  }
-
-
-  if (error) {
-    console.log(error)
-    return (<div className=" flex items-center justify-center h-screen w-full">
-      <ErrorComponent errorMessage={(error as any).data} />
-    </div>)
   }
 
   return (

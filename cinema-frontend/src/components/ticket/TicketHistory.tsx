@@ -27,7 +27,7 @@ const TicketHistory = ({ setMenuState }: Props) => {
         return null
     }
 
-    const { data: tickets, error, isLoading } = useGetTicketsByUserIdQuery(user.id);
+    const { data: tickets, error, isLoading } = useGetTicketsByUserIdQuery({});
     if (error) return (<div className=" flex items-center justify-center h-screen w-full">
         <ErrorComponent errorMessage={(error as any).data} />
     </div>);

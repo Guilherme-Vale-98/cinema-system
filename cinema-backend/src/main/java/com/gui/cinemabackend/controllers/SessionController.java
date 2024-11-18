@@ -1,5 +1,6 @@
 package com.gui.cinemabackend.controllers;
 
+import com.gui.cinemabackend.Utils.JwtUtil;
 import com.gui.cinemabackend.entities.Movie;
 import com.gui.cinemabackend.entities.Session;
 import com.gui.cinemabackend.entities.Ticket;
@@ -11,11 +12,13 @@ import com.gui.cinemabackend.repositories.MovieRepository;
 import com.gui.cinemabackend.repositories.SessionRepository;
 import com.gui.cinemabackend.repositories.TicketRepository;
 import com.gui.cinemabackend.repositories.UserRepository;
+import io.jsonwebtoken.Claims;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -36,6 +39,8 @@ public class SessionController {
     @Autowired
     TicketRepository ticketRepository;
 
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @PostMapping
     public ResponseEntity createNewSession(@RequestBody SessionDTO sessionDTO){
@@ -141,8 +146,16 @@ public class SessionController {
         }
         return row.matches("[A-J]");
     }
-    @GetMapping("tickets/user/{userId}")
-    public ResponseEntity getUserTickets(@PathVariable("userId") Long userId){
+    @GetMapping("tickets/user")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity getUserTickets(
+                                         @RequestHeader("Authorization") String authorizationHeader){
+        String token = authorizationHeader.replace("Bearer ", "");
+
+        if (!jwtUtil.validateJwtToken(token)) {
+            return new ResponseEntity<>("Invalid token", HttpStatus.UNAUTHORIZED);
+        }
+        Long userId = jwtUtil.getUserIdFromJwtToken(token);
 
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isEmpty()){
