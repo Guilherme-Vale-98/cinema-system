@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../redux/hooks';
 import { Err } from '../types/ErrorType';
 import LoginForm from '../components/forms/LoginForm';
+import RegisterForm from '../components/forms/RegisterForm';
 
 
 
@@ -19,9 +20,9 @@ const Account = (props: Props) => {
 
     return (
         <div className='p-32 bg-[#3f546e] w-full '>
-            <div className='border-8 h-[550px] bg-gray-900 p-16 rounded-md w-full border-amber-900 flex items-center justify-between text-3xl flex-wrap font-bold text-white'>
+            <div className='border-8 h-[750px] bg-gray-900 p-16 rounded-md w-full border-amber-900 flex items-center justify-between text-3xl flex-wrap font-bold text-white'>
                 <LoginForm/>
-                <div className='border border-red-400'>Register</div>
+                <RegisterForm/>
             </div>
         </div>
     )

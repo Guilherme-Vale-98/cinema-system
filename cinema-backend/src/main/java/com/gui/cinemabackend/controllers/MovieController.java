@@ -132,7 +132,7 @@ public class MovieController {
             Date currentDate = new Date();
             Date sessionStartTime = movie.get().getSessions().get(0).getStartTime();
             if(currentDate.after(sessionStartTime)){
-               throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Movie Session expired");
+               throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sessão expirada");
             };
             return new ResponseEntity<>(movie.get(), HttpStatus.OK);
 

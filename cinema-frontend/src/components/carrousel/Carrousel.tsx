@@ -60,7 +60,6 @@ const Carrousel = (props: Props) => {
                 <h2 className='text-6xl font-bold'>Filmes em destaque</h2>
                 <div className='flex font-semibold gap-10'>
                     <span onClick={handleCartaz} className={`text-2xl cursor-pointer border border-transparent ${moviesView === 'Em cartaz'? "border-b-white": ''}`}> Em cartaz </span>
-                    <span onClick={handleEmBreve} className={ `${moviesView === 'Em breve'? "border-b ": ''} cursor-pointer text-2xl`}> Em breve </span>
             </div>
             </div>
             <div className="relative md:w-full my-[2rem] p-6 overflow-x-hidden">

@@ -141,7 +141,7 @@ public class SessionController {
 
 
     private boolean isSeatValid(String row, String column){
-        if(Integer.parseInt(column) > 16 && Integer.parseInt(column) < 1){
+        if(Integer.parseInt(column) > 16 || Integer.parseInt(column) < 1){
             return false;
         }
         return row.matches("[A-J]");
