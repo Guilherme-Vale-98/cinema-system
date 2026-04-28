@@ -12,6 +12,7 @@ import com.gui.cinemabackend.repositories.MovieRepository;
 import com.gui.cinemabackend.repositories.SessionRepository;
 import com.gui.cinemabackend.repositories.TicketRepository;
 import com.gui.cinemabackend.repositories.UserRepository;
+import com.gui.cinemabackend.services.UserDetailsImpl;
 import io.jsonwebtoken.Claims;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -57,14 +59,27 @@ public class SessionController {
     }
 
     @PostMapping("/{sessionId}/tickets")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity createNewTicket(@PathVariable("sessionId") Long sessionId,
-                                          @RequestBody List<TicketDTO> ticketsDTO){
+                                          @RequestBody List<TicketDTO> ticketsDTO,
+                                          Authentication authentication){
 
         Optional<Session> sessionOptional = sessionRepository.findById(sessionId);
         if (sessionOptional.isEmpty()){
             String message = "Session id not found";
             return new ResponseEntity(message, HttpStatus.NOT_FOUND);
         }
+
+        if (!(authentication.getPrincipal() instanceof UserDetailsImpl userDetails)) {
+            return new ResponseEntity("User not authenticated", HttpStatus.UNAUTHORIZED);
+        }
+
+        Optional<User> userOptional = userRepository.findById(userDetails.getId());
+        if (userOptional.isEmpty()){
+            String message = "User id not found";
+            return new ResponseEntity(message, HttpStatus.NOT_FOUND);
+        }
+
         Date currentDate = new Date();
         Date sessionStartTime = sessionOptional.get().getStartTime();
 
@@ -100,10 +115,7 @@ public class SessionController {
         for (TicketDTO ticketDTO : ticketsDTO) {
             Ticket ticket = new Ticket();
 
-            if(ticketDTO.getUserId() != null){
-                Optional<User> userOptional = userRepository.findById(ticketDTO.getUserId());
-                userOptional.ifPresent(ticket::setUser);
-            }
+            ticket.setUser(userOptional.get());
             ticket.setSession(sessionOptional.get());
             ticket.setSeat(ticketDTO.getSeat());
             ticket.getSeat().setPrice();
@@ -147,7 +159,7 @@ public class SessionController {
         return row.matches("[A-J]");
     }
     @GetMapping("tickets/user")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity getUserTickets(
                                          @RequestHeader("Authorization") String authorizationHeader){
         String token = authorizationHeader.replace("Bearer ", "");

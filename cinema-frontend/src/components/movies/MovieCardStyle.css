@@ -5,3 +5,11 @@
     height: 620px;
     border-radius: 8px;
   }
+
+.movie-card-title {
+    display: -webkit-box;
+    max-width: 100%;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}

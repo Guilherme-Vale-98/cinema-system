@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Navigate, useNavigate, useParams } from 'react-router-dom'
+import React, { useEffect, useRef, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import ingressoWebp from "../../../src/assets/ingresso.webp"
 import debitCard from "../../../src/assets/debitcard.png"
 import { useGetMovieSessionByDateQuery, usePostTicketsMutation } from '../../redux/services/api/cinemaApi';
@@ -24,10 +24,20 @@ const SessionDetails = (props: Props) => {
   const { movieTitle, sessionId } = useParams<{ movieTitle: string, sessionId: string }>();
   const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]);
   const [takenSeats, setTakenSeats] = useState<Seat[]>([]);
-  const { data: movie, error, isLoading } = useGetMovieSessionByDateQuery({ movieTitle, sessionId });
   const user = useAppSelector((state: RootState) => state.userState.user);
+  const { data: movie, error, isLoading } = useGetMovieSessionByDateQuery(
+    { movieTitle, sessionId },
+    { skip: !user }
+  );
   const [countdown, setCountdown] = useState<number | null>(null);
+  const summaryDetailsRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/conta');
+    }
+  }, [navigate, user]);
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
@@ -54,18 +64,26 @@ const SessionDetails = (props: Props) => {
 
 
   const handlePostTickets = async () => {
-    if (buySteps < 3) {
-      setBuysteps(buySteps + 1)
-    }
     if (buySteps === 2) {
+      if (!user) {
+        navigate('/conta');
+        return;
+      }
+
+      setBuysteps(3)
       try {
-        const tickets = selectedSeats.map(seat => ({ userId: user?.id, seat}))
+        const tickets = selectedSeats.map(seat => ({ userId: user.id, seat}))
         await postTickets({ sessionId, tickets }).unwrap();
 
       } catch (err) {
         console.error('Failed to create tickets: ', err);
       }
       setCountdown(3)
+      return;
+    }
+
+    if (buySteps < 3) {
+      setBuysteps(buySteps + 1)
     }
   };
 
@@ -82,7 +100,19 @@ const SessionDetails = (props: Props) => {
     }
   }, [movie])
 
+  useEffect(() => {
+    const hasInteira = selectedSeats.some((seat) => seat.seatType === 'INTEIRA');
+    const hasMeia = selectedSeats.some((seat) => seat.seatType === 'MEIA');
 
+    if (hasInteira && hasMeia) {
+      summaryDetailsRef.current?.scrollTo({
+        top: summaryDetailsRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
+  }, [selectedSeats]);
+
+  if (!user) return null;
   if (isLoading) return <div className='min-h-[600px] flex items-center justify-center mt-16 p-4 bg-[#3f546e] '><ClipLoader size={50} color='blue' /></div>;
   if (error) {
     console.log(error)
@@ -160,6 +190,33 @@ const SessionDetails = (props: Props) => {
   };
 
   const renderTicketSummary = (movie: Movie, seats: Seat[]) => {
+    const inteiraSeats = seats.filter((seat) => seat.seatType === 'INTEIRA');
+    const meiaSeats = seats.filter((seat) => seat.seatType === 'MEIA');
+    const totalPrice = seats.reduce((total, seat) => total + seat.price, 0);
+
+    const TicketTypeSummary: React.FC<{ label: string, seatsByType: Seat[] }> = ({ label, seatsByType }) => {
+      if (seatsByType.length === 0) {
+        return null;
+      }
+
+      return (
+        <div className='flex flex-col gap-1 rounded-md bg-[#1f2937] p-2 text-base'>
+          <div className='flex justify-between font-bold'>
+            <span>{label}</span>
+            <span>{seatsByType.length}</span>
+          </div>
+          <div className='flex justify-between text-gray-300'>
+            <span>Assentos</span>
+            <span className='text-right'>{seatsByType.map((seat) => seat.row + seat.column).join(', ')}</span>
+          </div>
+          <div className='flex justify-between text-gray-300'>
+            <span>Subtotal</span>
+            <span>R$ {seatsByType.reduce((total, seat) => total + seat.price, 0)},00</span>
+          </div>
+        </div>
+      )
+    }
+
     return (
       <div className='flex p-4 rounded-md text-white 
   flex-col bg-[#111827] w-[450px] h-[600px]'>
@@ -167,27 +224,33 @@ const SessionDetails = (props: Props) => {
   font-semibold items-center text-lg'>
           Resumo do pedido
         </div>
-        <div className='flex gap-2 font-bold text-lg'>
-          <img src={movie.posterPath} className='w-[40%] '></img>
-          <span>{movie.title}</span>
-        </div>
-        <div className='border-b border-t mt-2 p-2 text-lg font-bold'>
-          <span>{movie.sessions[0].startTime.toString()}</span>
-        </div>
-        <div className='mt-2 text-lg justify-between flex font-bold'>
-          Assentos
-          <div className='flex ml-6 gap-1 flex-wrap'>
-            {seats.map((seat, index) => <p key={index}>{seat.row + seat.column}</p>)}
+        <div ref={summaryDetailsRef} className='min-h-0 flex-1 overflow-y-auto pr-1'>
+          <div className='flex gap-2 font-bold text-lg'>
+            <img src={movie.posterPath} className='w-[40%] '></img>
+            <span>{movie.title}</span>
+          </div>
+          <div className='border-b border-t mt-2 p-2 text-lg font-bold'>
+            <span>{movie.sessions[0].startTime.toString()}</span>
+          </div>
+          <div className='mt-2 text-lg justify-between flex font-bold'>
+            Assentos
+            <div className='flex ml-6 gap-1 flex-wrap justify-end'>
+              {seats.map((seat, index) => <p key={index}>{seat.row + seat.column}</p>)}
+            </div>
+          </div>
+          <div className='mt-3 flex flex-col gap-2'>
+            <TicketTypeSummary label='Inteira' seatsByType={inteiraSeats} />
+            <TicketTypeSummary label='Meia' seatsByType={meiaSeats} />
           </div>
         </div>
-        <div className='border-t mt-auto gap-1 text-lg flex flex-col'>
+        <div className='border-t mt-2 gap-1 text-lg flex flex-col'>
           <span className='flex justify-between'>
             Itens <p>{seats.length}</p>
           </span>
           <span className='font-bold  flex justify-between'>Total:
-            <p> R$ {seats.reduce((total, seat) => total + seat.price, 0)},00</p></span>
+            <p> R$ {totalPrice},00</p></span>
         </div>
-        <div className='mt-10 gap-1 text-lg flex'>
+        <div className='mt-4 gap-1 text-lg flex shrink-0'>
 
           <button
             disabled={buySteps <= 0 || buySteps === 3}
@@ -207,6 +270,9 @@ const SessionDetails = (props: Props) => {
     return (
       <div className='rounded-lg hide-scrollbar w-full flex-col ml-4 overflow-scroll flex h-[600px] p-4 bg-[#111827]'>
         <span className='text-base font-semibold text-red-500'>Confira o número de ingressos meia-entrada e inteira.</span>
+        <div className='my-4 rounded-md border border-amber-500 bg-[#1f2937] p-4 text-lg font-semibold text-amber-300'>
+          Sistema de pagamento ainda em desenvolvimento.
+        </div>
         <ul>
           <li onClick={() => setPaymentMethod("Cartão de débito")}
             className={`flex ${paymentMethod === "Cartão de débito" ? "border border-blue-400" : ""} cursor-pointer text-white text-lg mb-2 p-2 items-center rounded-lg bg-[#3b424d]`}>
@@ -217,16 +283,6 @@ const SessionDetails = (props: Props) => {
             className={`flex ${paymentMethod === "Cartão de crédito" ? "border border-blue-400" : ""} cursor-pointer text-white text-lg mb-2 p-2 items-center rounded-lg bg-[#3b424d]`}>
             <img className='w-16 h-12' src={debitCard} />
             <p className='p-2  ml-4 font-semibold'>Cartão de crédito</p>
-          </li>
-          <li onClick={() => setPaymentMethod("Pix")}
-            className={`flex ${paymentMethod === "Pix" ? "border border-blue-400" : ""} cursor-pointer text-white text-lg mb-2 p-2 items-center rounded-lg bg-[#3b424d]`}>
-            <img className='w-16 h-12' src={debitCard} />
-            <p className='p-2 ml-4 font-semibold'>Pix</p>
-          </li>
-          <li onClick={() => setPaymentMethod("Google Pay")}
-            className={`flex ${paymentMethod === "Google Pay" ? "border border-blue-400" : ""} cursor-pointer text-white text-lg mb-2 p-2 items-center rounded-lg bg-[#3b424d]`}>
-            <img className='w-16 h-12' src={debitCard} />
-            <p className='p-2 ml-4 font-semibold'>Google Pay</p>
           </li>
         </ul>
       </div>

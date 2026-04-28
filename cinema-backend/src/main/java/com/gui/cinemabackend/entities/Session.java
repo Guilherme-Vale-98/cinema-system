@@ -23,7 +23,7 @@ public class Session {
     private Movie movie;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     private Date startTime;
-    @OneToMany(mappedBy = "session", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "session", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Ticket> tickets;
 
 

@@ -3,9 +3,11 @@ package com.gui.cinemabackend.controllers;
 import com.gui.cinemabackend.entities.Director;
 import com.gui.cinemabackend.entities.Movie;
 import com.gui.cinemabackend.entities.Session;
-import com.gui.cinemabackend.model.SessionDTO;
+import com.gui.cinemabackend.model.MovieSummaryDTO;
+import com.gui.cinemabackend.model.MovieWithSessionsDTO;
 import com.gui.cinemabackend.repositories.DirectorRepository;
 import com.gui.cinemabackend.repositories.MovieRepository;
+import com.gui.cinemabackend.repositories.SessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -27,6 +28,9 @@ public class MovieController {
 
     @Autowired
     DirectorRepository directorRepository;
+
+    @Autowired
+    SessionRepository sessionRepository;
 
     @PostMapping
     public ResponseEntity createNewMovie(@RequestBody Movie movie){
@@ -77,7 +81,7 @@ public class MovieController {
     }
 
     @GetMapping("/session/{date}")
-    public ResponseEntity<List<Movie>> getMovieSessionsByDate(
+    public ResponseEntity<List<MovieWithSessionsDTO>> getMovieSessionsByDate(
             @PathVariable("date") @DateTimeFormat(pattern = "dd-MM-yyyy") Date date){
 
         Calendar calendar = Calendar.getInstance();
@@ -95,23 +99,16 @@ public class MovieController {
         Date endOfDay = calendar.getTime();
 
 
-        List<Movie> movies = movieRepository.findAll();
-        if (movies.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhuma sessao neste dia.");
-        }
+        List<Session> sessions = sessionRepository.findUpcomingSessionsByDate(startOfDay, endOfDay, new Date());
+        Map<Long, MovieWithSessionsDTO> moviesById = new LinkedHashMap<>();
 
-        List<Movie> filteredMovies = movies.stream().peek(movie -> {
-            List<Session> f = movie.getSessions().stream()
-                    .filter(session ->
-                            session.getStartTime().after(new Date())
-                                    && session.getStartTime().after(startOfDay)
-                                        && session.getStartTime().before(endOfDay)
-                    )
-                    .collect(Collectors.toList());
-            movie.setSessions(f);
-        }).filter(movie -> !movie.getSessions().isEmpty()).toList();
+        sessions.forEach(session -> {
+            Movie movie = session.getMovie();
+            moviesById.computeIfAbsent(movie.getId(), id -> new MovieWithSessionsDTO(movie))
+                    .addSession(session);
+        });
 
-        return new ResponseEntity<>(filteredMovies, HttpStatus.OK);
+        return ResponseEntity.ok(new ArrayList<>(moviesById.values()));
     }
     @GetMapping("/{movieTitle}/{sessionId}")
     public ResponseEntity<Movie> getMovieByNameAndSessionDate(
@@ -138,11 +135,14 @@ public class MovieController {
 
     }
     @GetMapping("/featured")
-    public ResponseEntity<List<Movie>> getFeaturedMovies(){
+    public ResponseEntity<List<MovieSummaryDTO>> getFeaturedMovies(){
 
-       List<Movie> movies= movieRepository.findByIsFeatured(true);
+       List<MovieSummaryDTO> movies= movieRepository.findByIsFeatured(true)
+               .stream()
+               .map(MovieSummaryDTO::new)
+               .toList();
 
-       return new ResponseEntity<>(movies, HttpStatus.OK);
+       return ResponseEntity.ok(movies);
 
     }
 
