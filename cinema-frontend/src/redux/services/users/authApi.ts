@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { User } from '../../../types/UserType';
 import { RootState } from '../../store';
 import { UserUpdateInfo } from '../../../components/forms/EditProfileForm';
+import { apiBaseUrl } from '../../../config/api';
 
 
 export interface Credentials {
@@ -13,7 +14,7 @@ export interface Credentials {
 export const authApi = createApi({
     reducerPath: 'authApi',
     baseQuery: fetchBaseQuery({
-      baseUrl: `http://localhost:8080/auth`,
+      baseUrl: `${apiBaseUrl}/auth`,
       prepareHeaders: (headers, { getState }) => {
         const token = (getState() as RootState).userState.user?.accessToken;
         if (token) {

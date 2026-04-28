@@ -5,6 +5,7 @@ import { ApiError, Session } from '../../types/SessionType';
 import { Movie } from '../../types/MovieType';
 import { ClipLoader } from 'react-spinners';
 import ErrorComponent from '../error/ErrorComponent';
+import WarningComponent from '../error/WarningComponent';
 
 type Props = {}
 
@@ -69,7 +70,7 @@ const ListSection = (props: Props) => {
         {error && 'data' in error && <p>{(error.data as ApiError).message}</p>}
         {(movies && movies.length) === 0 && <div className="bg-[#3f546e] flex items-center justify-start w-full">
           <div className='border-8 rounded-md w-1/2 border-amber-900 flex items-center justify-center bg-[#3b424d] text-3xl flex-wrap font-bold text-white '>
-            <ErrorComponent errorMessage="Nenhum filme nesta data" />
+            <WarningComponent warningMessage="Nenhum filme nesta data" />
           </div>
         </div>}
         {movies && movies.map((movie: Movie, index: number) => <ListSectionItem movie={movie} key={index} />)}

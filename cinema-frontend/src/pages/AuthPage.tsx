@@ -22,7 +22,7 @@ const LoginForm = () => {
     try {
      const response:any = await login({ username, password });
      const user:User = response.data;
-     dispatch(setUser({user}));
+     dispatch(setUser(user));
      tryGet('user');
      tryGe('all')
      tryG('admin')

@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Movie } from '../../../types/MovieType';
-import { Ticket } from '../../../types/TicketType';
 import { RootState } from '../../store';
+import { apiBaseUrl } from '../../../config/api';
 
 interface GetMovieSessionByDateRequest {
   movieTitle?: string;
@@ -10,7 +10,7 @@ interface GetMovieSessionByDateRequest {
 
 export const cinemaApi = createApi({
   reducerPath: 'cinemaApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8080/api',
+  baseQuery: fetchBaseQuery({ baseUrl: `${apiBaseUrl}/api`,
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).userState.user?.accessToken;
       if (token) {
