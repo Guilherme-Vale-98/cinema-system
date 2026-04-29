@@ -1,0 +1,41 @@
+services:
+  - type: web
+    name: cinema-backend
+    runtime: docker
+    rootDir: cinema-backend
+    plan: free
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRATION_MS
+        value: 1000000000
+      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        value: update
+      - key: SPRING_FLYWAY_BASELINE_ON_MIGRATE
+        value: true
+      - key: SPRING_FLYWAY_ENABLED
+        value: true
+      - key: SPRING_FLYWAY_LOCATIONS
+        value: classpath:db/migration
+      - key: SPRING_JACKSON_TIME_ZONE
+        value: America/Sao_Paulo
+
+  - type: web
+    name: cinema-frontend
+    runtime: static
+    rootDir: cinema-frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://cinema-backend.onrender.com
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
