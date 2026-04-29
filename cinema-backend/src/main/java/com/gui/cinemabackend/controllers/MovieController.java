@@ -13,6 +13,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -33,6 +34,7 @@ public class MovieController {
     SessionRepository sessionRepository;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity createNewMovie(@RequestBody Movie movie){
         if(movieRepository.existsByTitle(movie.getTitle())) {
             String message = "Movie already exists";
@@ -46,10 +48,11 @@ public class MovieController {
            movie.setDirector(director);
         }
         movieRepository.save(movie);
-        return new ResponseEntity<>(movie, HttpStatus.CREATED);
+        return new ResponseEntity<>(new MovieSummaryDTO(movie), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{movieId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity deleteMovieById(@PathVariable("movieId") Long movieId){
         Optional<Movie> movieOptional = movieRepository.findById(movieId);
         if (movieOptional.isEmpty()){
@@ -71,12 +74,14 @@ public class MovieController {
         }
 
         Movie movie = movieOptional.get();
-        return new ResponseEntity(movie, HttpStatus.OK);
+        return new ResponseEntity(new MovieWithSessionsDTO(movie, true), HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity getAllMovies(){
-        List<Movie> movies = movieRepository.findAll();
+        List<MovieSummaryDTO> movies = movieRepository.findAll().stream()
+                .map(MovieSummaryDTO::new)
+                .toList();
         return new ResponseEntity(movies, HttpStatus.OK);
     }
 
@@ -131,7 +136,7 @@ public class MovieController {
             if(currentDate.after(sessionStartTime)){
                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sessão expirada");
             };
-            return new ResponseEntity<>(movie.get(), HttpStatus.OK);
+            return new ResponseEntity(new MovieWithSessionsDTO(movie.get(), true), HttpStatus.OK);
 
     }
     @GetMapping("/featured")

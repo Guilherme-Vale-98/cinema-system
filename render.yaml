@@ -15,6 +15,8 @@ services:
         generateValue: true
       - key: JWT_EXPIRATION_MS
         value: 1000000000
+      - key: SERVER_ERROR_INCLUDE_MESSAGE
+        value: never
       - key: SPRING_JPA_HIBERNATE_DDL_AUTO
         value: update
       - key: SPRING_FLYWAY_BASELINE_ON_MIGRATE

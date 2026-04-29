@@ -45,6 +45,7 @@ public class SessionController {
     private JwtUtil jwtUtil;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity createNewSession(@RequestBody SessionDTO sessionDTO){
         Optional<Movie> movie = movieRepository.findByTitle(sessionDTO.getMovieTitle());
 
@@ -131,13 +132,23 @@ public class SessionController {
     }
 
     @GetMapping("/{sessionId}/tickets/{ticketId}")
-    public ResponseEntity getTicketById(@PathVariable("ticketId") Long ticketId){
+    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity getTicketById(@PathVariable("sessionId") Long sessionId,
+                                        @PathVariable("ticketId") Long ticketId,
+                                        Authentication authentication){
         Optional<Ticket> ticketOptional = ticketRepository.findById(ticketId);
         if (ticketOptional.isEmpty()){
             String message = "Session id not found";
             return new ResponseEntity(message, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity(ticketOptional.get(), HttpStatus.OK);
+        Ticket ticket = ticketOptional.get();
+        if (!ticket.getSession().getId().equals(sessionId)) {
+            return new ResponseEntity("Ticket does not belong to session", HttpStatus.NOT_FOUND);
+        }
+        if (!ticketBelongsToAuthenticatedUserOrAdmin(ticket, authentication)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Forbidden");
+        }
+        return new ResponseEntity(toTicketDTO(ticket), HttpStatus.OK);
     }
 
     @GetMapping("/{sessionId}")
@@ -185,7 +196,12 @@ public class SessionController {
         return new ResponseEntity(ticketsDTO,HttpStatus.OK);
     }
     @GetMapping("/{sessionId}/tickets/user/{userId}")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity getTicketsByUserAndSession(@PathVariable("sessionId") Long sessionId, @PathVariable("userId") Long userId){
+        Authentication authentication = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        if (!isCurrentUserOrAdmin(authentication, userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Forbidden");
+        }
         Optional<Session> sessionOptional = sessionRepository.findById(sessionId);
 
         if (sessionOptional.isEmpty()){
@@ -208,5 +224,40 @@ public class SessionController {
                         ticket.getSession().getStartTime()
                         )).toList();
         return new ResponseEntity(ticketsDTO,HttpStatus.OK);
+    }
+
+    private TicketDTO toTicketDTO(Ticket ticket) {
+        return new TicketDTO(
+                ticket.getId(),
+                ticket.getUser() == null ? null : ticket.getUser().getId(),
+                ticket.getSeat(),
+                ticket.getSession().getMovie().getTitle(),
+                ticket.getSession().getStartTime()
+        );
+    }
+
+    private boolean ticketBelongsToAuthenticatedUserOrAdmin(Ticket ticket, Authentication authentication) {
+        if (isAdmin(authentication)) {
+            return true;
+        }
+        if (!(authentication.getPrincipal() instanceof UserDetailsImpl userDetails)) {
+            return false;
+        }
+        return ticket.getUser() != null && ticket.getUser().getId().equals(userDetails.getId());
+    }
+
+    private boolean isCurrentUserOrAdmin(Authentication authentication, Long userId) {
+        if (isAdmin(authentication)) {
+            return true;
+        }
+        if (!(authentication.getPrincipal() instanceof UserDetailsImpl userDetails)) {
+            return false;
+        }
+        return userDetails.getId().equals(userId);
+    }
+
+    private boolean isAdmin(Authentication authentication) {
+        return authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(authority -> "ROLE_ADMIN".equals(authority.getAuthority()));
     }
 }

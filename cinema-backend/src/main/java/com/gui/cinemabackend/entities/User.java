@@ -30,6 +30,7 @@ public class User {
 
     @NotBlank
     @Size(max = 120)
+    @JsonIgnore
     private String password;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -37,6 +38,7 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Ticket> tickets;
 
     public User() {

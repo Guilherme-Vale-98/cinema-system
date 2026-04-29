@@ -13,8 +13,19 @@ public class MovieWithSessionsDTO extends MovieSummaryDTO {
         super(movie);
     }
 
+    public MovieWithSessionsDTO(Movie movie, boolean includeMovieSessions) {
+        super(movie);
+        if (includeMovieSessions && movie.getSessions() != null) {
+            this.sessions = movie.getSessions().stream()
+                    .map(MovieSessionDTO::new)
+                    .toList();
+        }
+    }
+
     public void addSession(Session session) {
-        sessions.add(new MovieSessionDTO(session));
+        if (sessions.stream().noneMatch(movieSession -> movieSession.getId().equals(session.getId()))) {
+            sessions.add(new MovieSessionDTO(session));
+        }
     }
 
     public List<MovieSessionDTO> getSessions() {

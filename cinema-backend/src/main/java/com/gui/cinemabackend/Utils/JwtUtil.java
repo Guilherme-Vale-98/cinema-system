@@ -21,11 +21,17 @@ import io.jsonwebtoken.security.Keys;
 public class JwtUtil {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
 
-    @Value("${gui.app.jwtSecret:${JWT_SECRET}}")
+    @Value("${gui.app.jwtSecret:}")
     private String jwtSecret;
 
-    @Value("${gui.app.jwtExpirationMs:${JWT_EXPIRATION_MS:1000000000}}")
+    @Value("${JWT_SECRET:}")
+    private String envJwtSecret;
+
+    @Value("${gui.app.jwtExpirationMs:0}")
     private int jwtExpirationMs;
+
+    @Value("${JWT_EXPIRATION_MS:1000000000}")
+    private int envJwtExpirationMs;
 
     public String generateJwtToken(Authentication authentication) {
 
@@ -36,13 +42,21 @@ public class JwtUtil {
                 .claim("role", userPrincipal.getAuthorities())
                 .claim("id", userPrincipal.getId())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .setExpiration(new Date((new Date()).getTime() + getJwtExpirationMs()))
                 .signWith(key(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
     private Key key() {
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(getJwtSecret()));
+    }
+
+    private String getJwtSecret() {
+        return jwtSecret == null || jwtSecret.isBlank() ? envJwtSecret : jwtSecret;
+    }
+
+    private int getJwtExpirationMs() {
+        return jwtExpirationMs > 0 ? jwtExpirationMs : envJwtExpirationMs;
     }
 
     public String getUserNameFromJwtToken(String token) {

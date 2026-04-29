@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;
 
 public class TicketDTO {
+    private Long ticketId;
     private Long userId;
     private String movieTitle;
     private Seat seat;
@@ -19,6 +20,22 @@ public class TicketDTO {
         this.movieTitle = movieTitle;
         this.seat = seat;
         this.startTime = startTime;
+    }
+
+    public TicketDTO(Long ticketId, Long userId, Seat seat, String movieTitle, Date startTime) {
+        this.ticketId = ticketId;
+        this.userId = userId;
+        this.movieTitle = movieTitle;
+        this.seat = seat;
+        this.startTime = startTime;
+    }
+
+    public Long getTicketId() {
+        return ticketId;
+    }
+
+    public void setTicketId(Long ticketId) {
+        this.ticketId = ticketId;
     }
 
     public Long getUserId() {
