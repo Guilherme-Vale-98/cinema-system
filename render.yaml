@@ -25,17 +25,3 @@ services:
         value: classpath:db/migration
       - key: SPRING_JACKSON_TIME_ZONE
         value: America/Sao_Paulo
-
-  - type: web
-    name: cinema-frontend
-    runtime: static
-    rootDir: cinema-frontend
-    buildCommand: npm ci && npm run build
-    staticPublishPath: dist
-    envVars:
-      - key: VITE_API_BASE_URL
-        value: https://cinema-backend.onrender.com
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
