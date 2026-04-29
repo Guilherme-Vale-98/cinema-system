@@ -66,6 +66,7 @@ public class WebSecurityConfig {
                                         .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/signup").permitAll()
                                         .requestMatchers(HttpMethod.GET, "/api/movies/**").permitAll()
                                         .requestMatchers(HttpMethod.GET, "/api/sessions/*").permitAll()
+                                        .requestMatchers(HttpMethod.HEAD, "/api/movies/**", "/api/sessions/*").permitAll()
                                         .requestMatchers(HttpMethod.POST, "/api/movies", "/api/sessions").hasRole("ADMIN")
                                         .requestMatchers(HttpMethod.DELETE, "/api/movies/*").hasRole("ADMIN")
                                         .requestMatchers(HttpMethod.POST, "/auth/updateUser").authenticated()

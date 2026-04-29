@@ -22,9 +22,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.head;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.when;
 
 @WebMvcTest(controllers = {AuthController.class, SessionController.class, MovieController.class})
 @Import({WebSecurityConfig.class, AuthEntryPointJwt.class, AuthTokenFilter.class})
@@ -74,5 +78,13 @@ class WebSecurityConfigTest {
                         .contentType("application/json")
                         .content("{}"))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void unauthenticatedHeadToPublicFeaturedMoviesIsAllowedForUptimeMonitors() throws Exception {
+        when(movieRepository.findByIsFeatured(true)).thenReturn(List.of());
+
+        mockMvc.perform(head("/api/movies/featured"))
+                .andExpect(status().isOk());
     }
 }
